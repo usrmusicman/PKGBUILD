@@ -1,6 +1,6 @@
 pkgbase = pipewire-control-center
 	pkgdesc = Pipewire and AV application control
-	pkgver = 1.0.0
+	pkgver = 1.1.0
 	pkgrel = 1
 	url = https://github.com/usrmusicman/PKGBUILDS
 	arch = x86_64
@@ -12,6 +12,6 @@ pkgbase = pipewire-control-center
 	source = Pipewire Control Center.desktop
 	source = pipewire_control_center
 	sha256sums = f7db1b808aed05d0501414a3519aae10a0c9516af8a51941575a636d6adf68b2
-	sha256sums = 67ccb89b96493f7271ab7267fa51afaa385340a53c066ed55a633fd1aeace436
+	sha256sums = bc714a4457229cee5031e57c41d2c440db42f99f2b8d7a7972d6ecb9cf889367
 
 pkgname = pipewire-control-center
