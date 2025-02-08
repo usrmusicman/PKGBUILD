@@ -4,14 +4,6 @@
 
 ## KDialog Prompts
 
-kde_cpu_gov() {
-    CPU_GOVERNOR_CHOICE=`kdialog --combobox "Choose CPU Governor" ${CPU_GOVERNORS[@]}`
-}
-
-kde_greetings() {
-    AV_OPTIONS_SELECT=`kdialog --combobox "Select a pipewire session control option" "Change CPU Governor" "Change Session Quantum"`
-}
-
 kde_pipewire_session() {
     AUDIO_BUFFER=`kdialog --combobox "Select an audio buffer" "default" "16" "24" "32" "48" "64" "96" "128" "192" "256" "384" "512" "768" "1024" "2048" "4096" "8192"`
     AUDIO_SAMPLE_RATE=`kdialog --combobox "Select a samplerate" "default" "44100" "48000" "88200" "96000" "192000"`
@@ -19,33 +11,12 @@ kde_pipewire_session() {
 
 ## Zenity Prompts
 
-zenity_cpu_gov() {
-    CPU_GOVERNOR_CHOICE=`zenity --list --title="Choose CPU Governor" --column="Options" ${CPU_GOVERNORS[@]}`
-}
-
-zenity_greetings() {
-    AV_OPTIONS_SELECT=`zenity --list --title="Pipewire Control Center" --column="Options" "Change CPU Governor" "Change Session Quantum"`
-}
-
 zenity_pipewire_session() {
     AUDIO_BUFFER=`zenity --list --title="Select An Audio Buffer" --column="Options" "default" "16" "24" "32" "48" "64" "96" "128" "192" "256" "384" "512" "768" "1024" "2048" "4096" "8192"`
     AUDIO_SAMPLE_RATE=`zenity --list --title="Select A Samplerate" --column="Options" "default" "44100" "48000" "88200" "96000" "192000"`
 }
 
 ## Program Logic
-
-list_cpu_gov_logic() {
-    ## Set CPUs variables
-    LIST_GOVERNORS=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors`
-    EMPTY_CHARACTER_LENGTH=`grep -o " " <<< "$LIST_GOVERNORS" | wc -l`
-    unset CPU_GOVERNORS
-
-    # List CPU Governors
-    for (( item=1 ; item<=$(( ${EMPTY_CHARACTER_LENGTH} + 1 )) ; item++ ));
-    do
-        CPU_GOVERNORS+=(`echo $LIST_GOVERNORS | cut -d " " -f $(( $item ))`)
-    done
-}
 
 pw_session_logic() {
     # Set audio buffer period
@@ -155,19 +126,7 @@ pw_session_logic() {
     esac
 }
 
-set_cpu_gov_logic() {
-    # Set CPU governor
-    pkexec --user root cpupower frequency-set --governor $CPU_GOVERNOR_CHOICE
-}
-
 ## Session Tray Output
-
-cpu_gov_systray() {
-    # Display a notification
-    if [[ ! -z "$CPU_GOVERNOR_CHOICE" ]]; then
-        kdialog --title "Change CPU governor" --passivepopup "Set the CPU Governor to $CPU_GOVERNOR_CHOICE." 10
-    fi
-}
 
 pw_session_systray() {
     # Display a notification
@@ -184,64 +143,32 @@ pw_session_systray() {
 
 if [[ "$XDG_SESSION_DESKTOP" == "KDE" ]]; then
     if [[ -x "/usr/bin/kdialog" ]]; then
-        # Greeting Message
-        kde_greetings
 
-        # Options Commands
-        if [[ "$AV_OPTIONS_SELECT" == "Change CPU Governor" ]]; then
-            list_cpu_gov_logic
-            kde_cpu_gov
-            set_cpu_gov_logic
-            cpu_gov_systray
-        elif [[ "$AV_OPTIONS_SELECT" == "Change Session Quantum" ]]; then
-            kde_pipewire_session
-            pw_session_logic
-            pw_session_systray
-        fi
+        # Commands
+		kde_pipewire_session
+		pw_session_logic
+		pw_session_systray
 
     elif [[ -x "/usr/bin/zenity" ]]; then
-        # Greeting Message
-        zenity_greetings
 
-        # Options Commands
-        if [[ "$AV_OPTIONS_SELECT" == "Change CPU Governor" ]]; then
-            list_cpu_gov_logic
-            zenity_cpu_gov
-            set_cpu_gov_logic
-        elif [[ "$AV_OPTIONS_SELECT" == "Change Session Quantum" ]]; then
-            zenity_pipewire_session
-            pw_session_logic
-        fi
+        # Commands
+		zenity_pipewire_session
+		pw_session_logic
+        
     fi
 else
     if [[ -x "/usr/bin/zenity" ]]; then
-        # Greeting Message
-        zenity_greetings
 
         # Options Commands
-        if [[ "$AV_OPTIONS_SELECT" == "Change CPU Governor" ]]; then
-            list_cpu_gov_logic
-            zenity_cpu_gov
-            set_cpu_gov_logic
-        elif [[ "$AV_OPTIONS_SELECT" == "Change Session Quantum" ]]; then
-            zenity_pipewire_session
-            pw_session_logic
-        fi
+		zenity_pipewire_session
+		pw_session_logic
 
     elif [[ -x "/usr/bin/kdialog" ]]; then
-        # Greeting Message
-        kde_greetings
 
         # Options Commands
-        if [[ "$AV_OPTIONS_SELECT" == "Change CPU Governor" ]]; then
-            list_cpu_gov_logic
-            zenity_cpu_gov
-            set_cpu_gov_logic
-            cpu_gov_systray
-        elif [[ "$AV_OPTIONS_SELECT" == "Change Session Quantum" ]]; then
-            zenity_pipewire_session
-            pw_session_logic
-            pw_session_systray
-        fi
+        zenity_pipewire_session
+        pw_session_logic
+        pw_session_systray
+        
     fi
 fi
