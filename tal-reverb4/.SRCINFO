@@ -1,0 +1,39 @@
+pkgbase = tal-reverb4
+	pkgdesc = A Simple Algorithmic Reverb V4 By TAL Software
+	pkgver = 4.0.4
+	pkgrel = 3
+	url = https://tal-software.com/tal-reverb-4
+	arch = x86_64
+	license = EULA
+	depends = alsa-lib
+	depends = bzip2
+	depends = brotli
+	depends = freetype2
+	depends = glibc
+	depends = graphite
+	depends = harfbuzz
+	depends = libpng
+	depends = pcre2
+	source = https://tal-software.com/downloads/plugins/TAL-Reverb-4_64_linux.zip
+	md5sums = SKIP
+
+pkgname = tal-reverb4-clap-bin
+	groups = clap-plugins
+	groups = pro-audio
+	provides = tal-reverb4-vst3-bin
+	conflicts = tal-reverb4-bin
+	replaces = tal-reverb4-bin
+
+pkgname = tal-reverb4-vst-bin
+	groups = pro-audio
+	groups = vst-plugins
+	provides = tal-reverb4-vst3-bin
+	conflicts = tal-reverb4-bin
+	replaces = tal-reverb4-bin
+
+pkgname = tal-reverb4-vst3-bin
+	groups = pro-audio
+	groups = vst3-plugins
+	provides = tal-reverb4-vst3-bin
+	conflicts = tal-reverb4-bin
+	replaces = tal-reverb4-bin
