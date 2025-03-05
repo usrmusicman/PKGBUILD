@@ -1,0 +1,50 @@
+pkgbase=mix-locker
+pkgname=('mix-locker-data-bin' 'mix-locker-lv2-bin' 'mix-locker-vst3-bin')
+pkgver=1.8.1
+pkgrel=1
+arch=('x86_64')
+url="https://audioassault.mx/getmixlocker"
+license=('EULA')
+depends=('alsa-lib' 'bzip2' 'brotli' 'freetype2' 'glibc' 'graphite' 'harfbuzz' 'keyutils' 'krb5' 'libcurl-gnutls' 'libffi' 'libnghttp2' 'libidn2' 'libp11-kit' 'libpng' 'libpsl' 'libssh2' 'libtasn1' 'libunistring' 'libxau' 'libxcb' 'libx11' 'nettle' 'openssl' 'pcre2' 'zlib' 'zstd')
+makedepends=('xdg-user-dirs' 'unzip')
+provides=('mix-locker')
+source=('Mix Locker Linker'
+        'mix-locker.png'
+        'https://audioassaultdownloads.s3.amazonaws.com/AmpLocker/AmpLocker109/MixLockerLinux.zip')
+sha256sums=('6ab1c9f9aafe4078de8f8f191e94dab3e9bb1ed0b60b2a77b927affe7cd46073'
+            '2ccb54d693ba09c2f86750891f2d1ea090f74fe282c3268617d1519b58f79ad5'
+            'a8c54e69a1e7143dcad8dd24d0fa986a6acffa48e5934778ecfb03bb4b106ce3')
+
+package_mix-locker-data-bin() {
+    ## Install Asset Data
+    pkgdesc="Audio Assault Mix Plugins (Data Assets)"
+    groups=('pro-audio')
+
+    ## Make data assets dir
+    mkdir -p "$pkgdir/usr/lib/MixLockerData"
+
+    ## Copy assets to data directory
+    cp -r "$srcdir/MixLockerData/"* "$pkgdir/usr/lib/MixLockerData"
+
+    ## Install Mix Locker Linker Script
+    install -Dm755 "$srcdir/Mix Locker Linker" "$pkgdir/usr/bin/Mix Locker Linker"
+}
+
+package_mix-locker-lv2-bin() {
+    ## Install LV2 Plugin
+    pkgdesc="Audio Assault Mix Plugins (LV2)"
+    depends=('mix-locker-data-bin')
+    groups=('pro-audio' 'lv2-plugins')
+    install -Dm755 "$srcdir/Mix Locker.lv2/Mix Locker.so" "$pkgdir/usr/lib/lv2/Mix Locker.lv2/Mix Locker.so"
+    install -Dm644 "$srcdir/Mix Locker.lv2/dsp.ttl" "$pkgdir/usr/lib/lv2/Mix Locker.lv2/dsp.ttl"
+    install -Dm644 "$srcdir/Mix Locker.lv2/manifest.ttl" "$pkgdir/usr/lib/lv2/Mix Locker.lv2/manifest.ttl"
+    install -Dm644 "$srcdir/Mix Locker.lv2/ui.ttl" "$pkgdir/usr/lib/lv2/Mix Locker.lv2/ui.ttl"
+}
+
+package_mix-locker-vst3-bin() {
+    ## Install VST3 Plugin
+    pkgdesc="Audio Assault Mix Plugins (VST3)"
+    depends=('mix-locker-data-bin')
+    groups=('pro-audio' 'vst3-plugins')
+    install -Dm755 "$srcdir/Mix Locker.vst3/Contents/x86_64-linux/Mix Locker.so" "$pkgdir/usr/lib/vst3/Mix Locker.vst3/Contents/x86_64-linux/Mix Locker.so"
+}
