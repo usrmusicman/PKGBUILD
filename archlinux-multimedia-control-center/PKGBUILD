@@ -1,0 +1,23 @@
+pkgname=archlinux-multimedia-control-center
+pkgver=1.0.0
+pkgrel=1
+arch=('x86_64')
+url="https://github.com/usrmusicman/PKGBUILDS"
+license=('EULA')
+depends=('pipewire' 'pipewire-jack' 'scx-scheds')
+optdepnds=('kdialog: A utility for displaying dialog boxes from shell scripts'
+          'zenity: Display graphical dialog boxes from shell scripts')
+makedepends=('git')
+pkgdesc="Multimedia Control Center for Archlinux"
+source=("Archlinux Multimedia Control Center.desktop"
+        "archlinux_multimedia_control_center")
+sha256sums=('98ef9763e0ac35f32929d5abfec72f0492a18439710df5c481ba204cab64f391'
+            'ef9f3aa98b3d0c149e83744023ca2779313dd3271a012de1fdde56c3f3774091')
+
+package() {
+    ## Install Script
+    install -Dm755 "${srcdir}/archlinux_multimedia_control_center" "$pkgdir/usr/bin/archlinux_multimedia_control_center"
+
+    ## Install Menu Entries
+    install -Dm644 "${srcdir}/Archlinux Multimedia Control Center.desktop" "$pkgdir/usr/share/applications/Archlinux Multimedia Control Center.desktop"
+}

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Archlinux Multimedia Control Center
+Comment=Control Center for Pipewire and CPU Functions
+Exec=/usr/bin/archlinux_multimedia_control_center
+Icon=/usr/share/icons/AdwaitaLegacy/48x48/legacy/system-run.png
+Categories=AudioVideo;X-AudioEditing;
+Terminal=false
+Type=Application
+Keywords=Audio;Video;Pipewire;
