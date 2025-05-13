@@ -1,5 +1,5 @@
 pkgname=archlinux-multimedia-control-center
-pkgver=1.0.0
+pkgver=1.0.1
 pkgrel=1
 arch=('x86_64')
 url="https://github.com/usrmusicman/PKGBUILDS"
@@ -12,7 +12,7 @@ pkgdesc="Multimedia Control Center for Archlinux"
 source=("Archlinux Multimedia Control Center.desktop"
         "archlinux_multimedia_control_center")
 sha256sums=('98ef9763e0ac35f32929d5abfec72f0492a18439710df5c481ba204cab64f391'
-            'ef9f3aa98b3d0c149e83744023ca2779313dd3271a012de1fdde56c3f3774091')
+            'dff969fd610d0bf59dadbbe4496d9ff012ef0c90e270fade88bfc01539ce5803')
 
 package() {
     ## Install Script
