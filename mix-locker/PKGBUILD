@@ -1,6 +1,6 @@
 pkgbase=mix-locker
 pkgname=('mix-locker-data-bin' 'mix-locker-lv2-bin' 'mix-locker-vst3-bin')
-pkgver=1.8.1
+pkgver=1.8.2
 pkgrel=1
 arch=('x86_64')
 url="https://audioassault.mx/getmixlocker"
@@ -13,7 +13,7 @@ source=('Mix Locker Linker'
         'https://audioassaultdownloads.s3.amazonaws.com/AmpLocker/AmpLocker109/MixLockerLinux.zip')
 sha256sums=('6ab1c9f9aafe4078de8f8f191e94dab3e9bb1ed0b60b2a77b927affe7cd46073'
             '2ccb54d693ba09c2f86750891f2d1ea090f74fe282c3268617d1519b58f79ad5'
-            'a8c54e69a1e7143dcad8dd24d0fa986a6acffa48e5934778ecfb03bb4b106ce3')
+            '0d0b0fd37a883736bba240c11cb2b6ad686ff238018da1d2b5dd7f59f082ea2d')
 
 package_mix-locker-data-bin() {
     ## Install Asset Data
