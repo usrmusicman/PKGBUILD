@@ -1,0 +1,77 @@
+# Maintainer: Katie Wolfe <~kt/public-inbox@lists.sr.ht>
+pkgname=('plogue-aria' 'plogue-chipspeech' 'plogue-chipsounds' 'plogue-sforzando' 'plogue-tablewarp2')
+pkgbase=plogue-plugins
+pkgver='1.981'
+debver='1.981'
+license=('custom')
+pkgrel=1
+epoch=1
+groups=('pro-audio')
+pkgdesc="Plogue audio plugins, beta Linux port (unofficial support, DO NOT report bugs upstream!)"
+arch=('x86_64')
+url="https://plogue.com"
+options=('!strip')
+install=plogue-plugins.install
+source_x86_64=(
+	"https://chipsounds.s3.us-east-1.amazonaws.com/LINUX_plogue-chipsounds_${pkgver}_x86_64.zip"
+	"https://chipspeech.s3.us-east-1.amazonaws.com/LINUX_plogue-chipspeech_${pkgver}_x86_64.zip"
+	"https://sforzando.s3.us-east-1.amazonaws.com/LINUX_plogue-sforzando_${pkgver}_x86_64.zip"
+)
+noextract=()
+sha512sums_x86_64=('7a8f1f4c480e665b4debd119cb873d314f18ed85d49a2a700c0df348a8db3e96e10c4dd4ec26edbfc5d39b1c9c38c1e93376f68c3042275e6c5a3b9ea4011d61'
+					'ecbe4db891e60b636c0df2d6fd226af4c5d032189018c6a6c6b0a94d41fc5788bf0446a5dacfd17dba2d1e0c2b97ac38689df6601d3a18d020fce7a7fcfa5ea6'
+					'ca10c6627be763260001ba31a27b7634942450fa3247b17fd99a3e7daaf4c2a270dffbb828298458f4a164e7375c45b4ec84e7013f65631a266d4d4d90773d6d')
+
+debs=('aria' 'chipsounds' 'chipspeech' 'sforzando' 'tablewarp2')
+
+package_plogue-aria() {
+	# from deb: libgtk-3-0,libglib2.0-0,libpango-1.0-0,libcairo2,libpangocairo-1.0-0,curl
+	depends=('gtk3' 'glib2' 'pango' 'cairo' 'curl' 'zenity')
+	optdepends=('libsndfile: Adds support for more audio formats')
+
+	mkdir -p "$srcdir/${pkgname}"
+	cd "$srcdir/${pkgname}"
+	ar x "$srcdir/LINUX_plogue-chipspeech_${pkgver}_x86_64/${pkgname}_${debver}_amd64.deb"
+	tar -C "${pkgdir}" -xJf "$srcdir/$pkgname/data.tar.xz"
+	install -Dm 644 "${pkgdir}/usr/share/doc/${pkgname}/copyright" "${pkgdir}/usr/share/licenses/${pkgname}/copyright"
+}
+
+package_plogue-chipspeech() {
+	depends=('plogue-aria')
+
+	mkdir -p "$srcdir/${pkgname}"
+	cd "$srcdir/${pkgname}"
+	ar x "$srcdir/LINUX_plogue-chipspeech_${pkgver}_x86_64/${pkgname}_${debver}_amd64.deb"
+	tar -C "${pkgdir}" -xJf "$srcdir/$pkgname/data.tar.xz"
+	install -Dm 644 "${pkgdir}/usr/share/doc/${pkgname}/copyright" "${pkgdir}/usr/share/licenses/${pkgname}/copyright"
+}
+
+package_plogue-chipsounds() {
+	depends=('plogue-aria')
+
+	mkdir -p "$srcdir/${pkgname}"
+	cd "$srcdir/${pkgname}"
+	ar x "$srcdir/LINUX_plogue-chipsounds_${pkgver}_x86_64/${pkgname}_${debver}_amd64.deb"
+	tar -C "${pkgdir}" -xJf "$srcdir/$pkgname/data.tar.xz"
+	install -Dm 644 "${pkgdir}/usr/share/doc/${pkgname}/copyright" "${pkgdir}/usr/share/licenses/${pkgname}/copyright"
+}
+
+package_plogue-sforzando() {
+	depends=('plogue-aria')
+
+	mkdir -p "$srcdir/${pkgname}"
+	cd "$srcdir/${pkgname}"
+	ar x "$srcdir/LINUX_plogue-sforzando_${pkgver}_x86_64/${pkgname}_${debver}_amd64.deb"
+	tar -C "${pkgdir}" -xJf "$srcdir/$pkgname/data.tar.xz"
+	install -Dm 644 "${pkgdir}/usr/share/doc/${pkgname}/copyright" "${pkgdir}/usr/share/licenses/${pkgname}/copyright"
+}
+package_plogue-tablewarp2() {
+	depends=('plogue-aria')
+
+	mkdir -p "$srcdir/${pkgname}"
+	cd "$srcdir/${pkgname}"
+	ar x "$srcdir/LINUX_plogue-sforzando_${pkgver}_x86_64/${pkgname}_${debver}_amd64.deb"
+	tar -C "${pkgdir}" -xJf "$srcdir/$pkgname/data.tar.xz"
+	install -Dm 644 "${pkgdir}/usr/share/doc/${pkgname}/copyright" "${pkgdir}/usr/share/licenses/${pkgname}/copyright"
+}
+
