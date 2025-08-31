@@ -1,6 +1,6 @@
 pkgbase = plogue-plugins
 	pkgdesc = Plogue audio plugins, beta Linux port (unofficial support, DO NOT report bugs upstream!)
-	pkgver = 1.981
+	pkgver = 1.982.beta3
 	pkgrel = 1
 	epoch = 1
 	url = https://plogue.com
@@ -9,12 +9,12 @@ pkgbase = plogue-plugins
 	groups = pro-audio
 	license = custom
 	options = !strip
-	source_x86_64 = https://chipsounds.s3.us-east-1.amazonaws.com/LINUX_plogue-chipsounds_1.981_x86_64.zip
-	source_x86_64 = https://chipspeech.s3.us-east-1.amazonaws.com/LINUX_plogue-chipspeech_1.981_x86_64.zip
-	source_x86_64 = https://sforzando.s3.us-east-1.amazonaws.com/LINUX_plogue-sforzando_1.981_x86_64.zip
-	sha512sums_x86_64 = 7a8f1f4c480e665b4debd119cb873d314f18ed85d49a2a700c0df348a8db3e96e10c4dd4ec26edbfc5d39b1c9c38c1e93376f68c3042275e6c5a3b9ea4011d61
-	sha512sums_x86_64 = ecbe4db891e60b636c0df2d6fd226af4c5d032189018c6a6c6b0a94d41fc5788bf0446a5dacfd17dba2d1e0c2b97ac38689df6601d3a18d020fce7a7fcfa5ea6
-	sha512sums_x86_64 = ca10c6627be763260001ba31a27b7634942450fa3247b17fd99a3e7daaf4c2a270dffbb828298458f4a164e7375c45b4ec84e7013f65631a266d4d4d90773d6d
+	source_x86_64 = https://chipsounds.s3.us-east-1.amazonaws.com/LINUX_plogue-chipsounds_1.982~beta3_x86_64.zip
+	source_x86_64 = https://chipspeech.s3.us-east-1.amazonaws.com/LINUX_plogue-chipspeech_1.982~beta3_x86_64.zip
+	source_x86_64 = https://sforzando.s3.us-east-1.amazonaws.com/LINUX_plogue-sforzando_1.982~beta3_x86_64.zip
+	sha512sums_x86_64 = 90ced79317888d4231fe389f79225b5d8d6ae945c0cebeb5a22fa0f4144e623f0a93a85e66287526ca719384ca5d183dc79cb84c2673a6c2e59a9718c201d418
+	sha512sums_x86_64 = 153b29b176739045b5adeed8cbc9ae43e1ad780e12a346cf92ab08afedcf7a2fbaaa082c8896369f5696da8372936449e0d62c0cb4f66236aabb27c44bcdb7fd
+	sha512sums_x86_64 = ea40781b86caf10e5e9e8ec9489310908c283339044b8ea1b2739030ba9c7013dda4efbe51c9ee5eb34964293504ab84cf4802a37afaf0453b2ec3b589c8d235
 
 pkgname = plogue-aria
 	depends = gtk3

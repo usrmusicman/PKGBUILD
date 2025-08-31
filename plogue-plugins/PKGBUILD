@@ -1,8 +1,9 @@
 # Maintainer: Katie Wolfe <~kt/public-inbox@lists.sr.ht>
 pkgname=('plogue-aria' 'plogue-chipspeech' 'plogue-chipsounds' 'plogue-sforzando' 'plogue-tablewarp2')
 pkgbase=plogue-plugins
-pkgver='1.981'
-debver='1.981'
+pkgver='1.982.beta3'
+debver='1.982~beta3'
+_dirver="1.982beta3"
 license=('custom')
 pkgrel=1
 epoch=1
@@ -13,14 +14,14 @@ url="https://plogue.com"
 options=('!strip')
 install=plogue-plugins.install
 source_x86_64=(
-	"https://chipsounds.s3.us-east-1.amazonaws.com/LINUX_plogue-chipsounds_${pkgver}_x86_64.zip"
-	"https://chipspeech.s3.us-east-1.amazonaws.com/LINUX_plogue-chipspeech_${pkgver}_x86_64.zip"
-	"https://sforzando.s3.us-east-1.amazonaws.com/LINUX_plogue-sforzando_${pkgver}_x86_64.zip"
+	"https://chipsounds.s3.us-east-1.amazonaws.com/LINUX_plogue-chipsounds_${debver}_x86_64.zip"
+	"https://chipspeech.s3.us-east-1.amazonaws.com/LINUX_plogue-chipspeech_${debver}_x86_64.zip"
+	"https://sforzando.s3.us-east-1.amazonaws.com/LINUX_plogue-sforzando_${debver}_x86_64.zip"
 )
 noextract=()
-sha512sums_x86_64=('7a8f1f4c480e665b4debd119cb873d314f18ed85d49a2a700c0df348a8db3e96e10c4dd4ec26edbfc5d39b1c9c38c1e93376f68c3042275e6c5a3b9ea4011d61'
-					'ecbe4db891e60b636c0df2d6fd226af4c5d032189018c6a6c6b0a94d41fc5788bf0446a5dacfd17dba2d1e0c2b97ac38689df6601d3a18d020fce7a7fcfa5ea6'
-					'ca10c6627be763260001ba31a27b7634942450fa3247b17fd99a3e7daaf4c2a270dffbb828298458f4a164e7375c45b4ec84e7013f65631a266d4d4d90773d6d')
+sha512sums_x86_64=('90ced79317888d4231fe389f79225b5d8d6ae945c0cebeb5a22fa0f4144e623f0a93a85e66287526ca719384ca5d183dc79cb84c2673a6c2e59a9718c201d418'
+					'153b29b176739045b5adeed8cbc9ae43e1ad780e12a346cf92ab08afedcf7a2fbaaa082c8896369f5696da8372936449e0d62c0cb4f66236aabb27c44bcdb7fd'
+					'ea40781b86caf10e5e9e8ec9489310908c283339044b8ea1b2739030ba9c7013dda4efbe51c9ee5eb34964293504ab84cf4802a37afaf0453b2ec3b589c8d235')
 
 debs=('aria' 'chipsounds' 'chipspeech' 'sforzando' 'tablewarp2')
 
@@ -31,7 +32,7 @@ package_plogue-aria() {
 
 	mkdir -p "$srcdir/${pkgname}"
 	cd "$srcdir/${pkgname}"
-	ar x "$srcdir/LINUX_plogue-chipspeech_${pkgver}_x86_64/${pkgname}_${debver}_amd64.deb"
+	ar x "$srcdir/LINUX_plogue-chipspeech_${_dirver}_x86_64/${pkgname}_${debver}_amd64.deb"
 	tar -C "${pkgdir}" -xJf "$srcdir/$pkgname/data.tar.xz"
 	install -Dm 644 "${pkgdir}/usr/share/doc/${pkgname}/copyright" "${pkgdir}/usr/share/licenses/${pkgname}/copyright"
 }
@@ -41,7 +42,7 @@ package_plogue-chipspeech() {
 
 	mkdir -p "$srcdir/${pkgname}"
 	cd "$srcdir/${pkgname}"
-	ar x "$srcdir/LINUX_plogue-chipspeech_${pkgver}_x86_64/${pkgname}_${debver}_amd64.deb"
+	ar x "$srcdir/LINUX_plogue-chipspeech_${_dirver}_x86_64/${pkgname}_${debver}_amd64.deb"
 	tar -C "${pkgdir}" -xJf "$srcdir/$pkgname/data.tar.xz"
 	install -Dm 644 "${pkgdir}/usr/share/doc/${pkgname}/copyright" "${pkgdir}/usr/share/licenses/${pkgname}/copyright"
 }
@@ -51,7 +52,7 @@ package_plogue-chipsounds() {
 
 	mkdir -p "$srcdir/${pkgname}"
 	cd "$srcdir/${pkgname}"
-	ar x "$srcdir/LINUX_plogue-chipsounds_${pkgver}_x86_64/${pkgname}_${debver}_amd64.deb"
+	ar x "$srcdir/LINUX_plogue-chipsounds_${_dirver}_x86_64/${pkgname}_${debver}_amd64.deb"
 	tar -C "${pkgdir}" -xJf "$srcdir/$pkgname/data.tar.xz"
 	install -Dm 644 "${pkgdir}/usr/share/doc/${pkgname}/copyright" "${pkgdir}/usr/share/licenses/${pkgname}/copyright"
 }
@@ -61,7 +62,7 @@ package_plogue-sforzando() {
 
 	mkdir -p "$srcdir/${pkgname}"
 	cd "$srcdir/${pkgname}"
-	ar x "$srcdir/LINUX_plogue-sforzando_${pkgver}_x86_64/${pkgname}_${debver}_amd64.deb"
+	ar x "$srcdir/LINUX_plogue-sforzando_${_dirver}_x86_64/${pkgname}_${debver}_amd64.deb"
 	tar -C "${pkgdir}" -xJf "$srcdir/$pkgname/data.tar.xz"
 	install -Dm 644 "${pkgdir}/usr/share/doc/${pkgname}/copyright" "${pkgdir}/usr/share/licenses/${pkgname}/copyright"
 }
@@ -70,7 +71,7 @@ package_plogue-tablewarp2() {
 
 	mkdir -p "$srcdir/${pkgname}"
 	cd "$srcdir/${pkgname}"
-	ar x "$srcdir/LINUX_plogue-sforzando_${pkgver}_x86_64/${pkgname}_${debver}_amd64.deb"
+	ar x "$srcdir/LINUX_plogue-sforzando_${_dirver}_x86_64/${pkgname}_${debver}_amd64.deb"
 	tar -C "${pkgdir}" -xJf "$srcdir/$pkgname/data.tar.xz"
 	install -Dm 644 "${pkgdir}/usr/share/doc/${pkgname}/copyright" "${pkgdir}/usr/share/licenses/${pkgname}/copyright"
 }
