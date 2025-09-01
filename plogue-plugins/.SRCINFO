@@ -17,7 +17,7 @@ pkgbase = plogue-plugins
 	sha512sums_x86_64 = ea40781b86caf10e5e9e8ec9489310908c283339044b8ea1b2739030ba9c7013dda4efbe51c9ee5eb34964293504ab84cf4802a37afaf0453b2ec3b589c8d235
 
 pkgname = plogue-aria
-	depends = gtk3mm
+	depends = gtkmm3
 	depends = glib2
 	depends = pango
 	depends = cairo
