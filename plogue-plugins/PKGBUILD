@@ -27,7 +27,7 @@ debs=('aria' 'chipsounds' 'chipspeech' 'sforzando' 'tablewarp2')
 
 package_plogue-aria() {
 	# from deb: libgtk-3-0,libglib2.0-0,libpango-1.0-0,libcairo2,libpangocairo-1.0-0,curl
-	depends=('gtk3' 'glib2' 'pango' 'cairo' 'curl' 'zenity')
+	depends=('gtk3mm' 'glib2' 'pango' 'cairo' 'curl' 'zenity')
 	optdepends=('libsndfile: Adds support for more audio formats')
 
 	mkdir -p "$srcdir/${pkgname}"
