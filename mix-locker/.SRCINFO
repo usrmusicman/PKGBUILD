@@ -1,5 +1,5 @@
 pkgbase = mix-locker
-	pkgver = 1.8.2
+	pkgver = 1.0.5
 	pkgrel = 1
 	url = https://audioassault.mx/getmixlocker
 	arch = x86_64
@@ -39,7 +39,7 @@ pkgbase = mix-locker
 	source = https://audioassaultdownloads.s3.amazonaws.com/AmpLocker/AmpLocker109/MixLockerLinux.zip
 	sha256sums = 6ab1c9f9aafe4078de8f8f191e94dab3e9bb1ed0b60b2a77b927affe7cd46073
 	sha256sums = 2ccb54d693ba09c2f86750891f2d1ea090f74fe282c3268617d1519b58f79ad5
-	sha256sums = 0d0b0fd37a883736bba240c11cb2b6ad686ff238018da1d2b5dd7f59f082ea2d
+	sha256sums = 3c3a685603c5556ced860bbd366b445b1fab24f7e8801a69331fade7cf35a880
 
 pkgname = mix-locker-data-bin
 	pkgdesc = Audio Assault Mix Plugins (Data Assets)
