@@ -1,9 +1,9 @@
 # Maintainer: Katie Wolfe <~kt/public-inbox@lists.sr.ht>
 pkgname=('plogue-aria' 'plogue-chipspeech' 'plogue-chipsounds' 'plogue-sforzando' 'plogue-tablewarp2')
 pkgbase=plogue-plugins
-pkgver='1.982.beta3'
-debver='1.982~beta3'
-_dirver="1.982beta3"
+pkgver='1.982.beta6'
+debver='1.982~beta6'
+_dirver="1.982beta6"
 license=('custom')
 pkgrel=1
 epoch=1
@@ -19,9 +19,9 @@ source_x86_64=(
 	"https://sforzando.s3.us-east-1.amazonaws.com/LINUX_plogue-sforzando_${debver}_x86_64.zip"
 )
 noextract=()
-sha512sums_x86_64=('90ced79317888d4231fe389f79225b5d8d6ae945c0cebeb5a22fa0f4144e623f0a93a85e66287526ca719384ca5d183dc79cb84c2673a6c2e59a9718c201d418'
-					'153b29b176739045b5adeed8cbc9ae43e1ad780e12a346cf92ab08afedcf7a2fbaaa082c8896369f5696da8372936449e0d62c0cb4f66236aabb27c44bcdb7fd'
-					'ea40781b86caf10e5e9e8ec9489310908c283339044b8ea1b2739030ba9c7013dda4efbe51c9ee5eb34964293504ab84cf4802a37afaf0453b2ec3b589c8d235')
+sha512sums_x86_64=('feed70428b1ae33b45c7e598830efdd2dbac0a0d27143058724b769e83befdcb8492a633acf317cf943f35d50389b9089fc49addf0b1fff10aa300f0ad2b019e'
+					'225c4f0de7d07f6c6ad17714a0cc8b36643b895dce3c21896722ee226ffc42219d99a75b1e7865de2c6fcf055162150c5f89cc8aef6c4371e226d0cc9e9369ef'
+					'263690bc7bd2ba0db9797b42557bda69ae9d5c614d48b5dda9bf6f42834bf1de1e30168750060f2c0846d77fd7ec0fdf8a99fe93545c0c09e8d17fca922fef9b')
 
 debs=('aria' 'chipsounds' 'chipspeech' 'sforzando' 'tablewarp2')
 
