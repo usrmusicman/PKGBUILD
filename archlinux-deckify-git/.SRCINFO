@@ -1,0 +1,27 @@
+pkgbase = archlinux-deckify-git
+	pkgdesc = Modular SteamOS-like session for Arch with centralized configuration and profile templates
+	pkgver = r40.c8dbfe8
+	pkgrel = 1
+	url = https://github.com/usrmusicman/ArchLinuxDeckify
+	install = archlinux-deckify-git.install
+	arch = any
+	license = GPL
+	makedepends = git
+	depends = gamescope
+	depends = steam
+	depends = steam-devices
+	depends = bash
+	depends = sudo
+	depends = scx-scheds
+	depends = pipewire
+	optdepends = nvidia-utils: For Nvidia GPU support
+	optdepends = lib32-nvidia-utils: For Nvidia 32-bit gaming
+	optdepends = xf86-video-amdgpu: For AMD GPU support
+	optdepends = vulkan-radeon: For AMD Vulkan support
+	optdepends = vulkan-intel: For Intel GPU support
+	provides = archlinux-deckify
+	conflicts = archlinux-deckify
+	source = git+https://github.com/usrmusicman/ArchLinuxDeckify.git
+	sha256sums = SKIP
+
+pkgname = archlinux-deckify-git

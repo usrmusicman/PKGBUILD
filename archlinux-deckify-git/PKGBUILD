@@ -1,0 +1,70 @@
+# Maintainer: Your Name <your@email.com>
+pkgname=archlinux-deckify-git
+_pkgname=ArchLinuxDeckify
+pkgver=r40.c8dbfe8
+pkgrel=1
+pkgdesc="Modular SteamOS-like session for Arch with centralized configuration and profile templates"
+arch=('any')
+url="https://github.com/usrmusicman/ArchLinuxDeckify"
+license=('GPL')
+
+depends=('gamescope' 'steam' 'steam-devices' 'bash' 'sudo' 'scx-scheds' 'pipewire')
+
+optdepends=(
+  'nvidia-utils: For Nvidia GPU support'
+  'lib32-nvidia-utils: For Nvidia 32-bit gaming'
+  'xf86-video-amdgpu: For AMD GPU support'
+  'vulkan-radeon: For AMD Vulkan support'
+  'vulkan-intel: For Intel GPU support'
+)
+
+makedepends=('git')
+provides=("${pkgname%-git}")
+conflicts=("${pkgname%-git}")
+source=("git+${url}.git")
+sha256sums=('SKIP')
+install="${pkgname}.install"
+
+pkgver() {
+  cd "$_pkgname"
+  printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+package() {
+  cd "$_pkgname"
+
+  # 1. Create directory structure
+  mkdir -p "$pkgdir/opt/steamos-session/config"
+  mkdir -p "$pkgdir/usr/bin"
+  mkdir -p "$pkgdir/etc/sudoers.d"
+  mkdir -p "$pkgdir/etc/systemd/system/getty@tty1.service.d"
+
+  # 2. Install scripts, config, and the new profile template
+  install -Dm755 steamos-gamemode-enhanced "$pkgdir/opt/steamos-session/"
+  install -Dm755 steamos-session-launcher "$pkgdir/opt/steamos-session/"
+  install -Dm644 steamos-session-config "$pkgdir/opt/steamos-session/config/steamos-session-config"
+
+  # Install the .profile template
+  install -Dm644 .bash_profile "$pkgdir/opt/steamos-session/config/.bash_profile"
+
+  # 3. Create symlink
+  ln -s /opt/steamos-session/steamos-session-launcher "$pkgdir/usr/bin/steamos-session"
+
+  # 4. Install Sudoers Override
+  cat <<EOF > "$pkgdir/etc/sudoers.d/steamos-session-overrides"
+# Nvidia specific power limits changes
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/nvidia-smi
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/nvidia-settings
+
+# SteamOS Enhanced Gamemode
+%wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/steamos-gamemode-enhanced
+EOF
+  chmod 440 "$pkgdir/etc/sudoers.d/steamos-session-overrides"
+
+  # 5. Install Getty Override Template
+  cat <<EOF > "$pkgdir/etc/systemd/system/getty@tty1.service.d/override.conf"
+[Service]
+ExecStart=
+ExecStart=-/sbin/agetty --autologin @USER@ --noclear %I 38400 linux
+EOF
+}

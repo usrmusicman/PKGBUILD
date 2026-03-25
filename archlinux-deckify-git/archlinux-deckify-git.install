@@ -1,0 +1,32 @@
+post_install() {
+  # Detect the real user
+  REAL_USER=${SUDO_USER:-$USER}
+
+  echo "==> Configuring autologin for user: $REAL_USER"
+  sed -i "s/@USER@/$REAL_USER/g" /etc/systemd/system/getty@tty1.service.d/override.conf
+
+  echo "==> Reloading systemd and enabling getty@tty1"
+  systemctl daemon-reload
+  systemctl enable getty@tty1.service
+
+  echo " "
+  echo "==> FINAL SETUP STEPS:"
+  echo " "
+  echo "  1. SET UP CONFIGURATION:"
+  echo "     mkdir -p ~/.config/steamos-session"
+  echo "     cp /opt/steamos-session/config/steamos-session-config ~/.config/steamos-session/"
+  echo " "
+  echo "  2. ENABLE SESSION LOGIC:"
+  echo "     Append the contents of /opt/steamos-session/config/.bash_profile to your ~/.bash_profile"
+  echo "     cat /opt/steamos-session/config/.bash_profile >> ~/.bash_profile"
+  echo " "
+  echo "==> Setup complete. Reboot to start your SteamOS session on TTY1."
+}
+
+post_upgrade() {
+  post_install
+}
+
+pre_remove() {
+  systemctl disable getty@tty1.service
+}
