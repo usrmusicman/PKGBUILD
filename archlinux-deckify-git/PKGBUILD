@@ -1,7 +1,7 @@
 # Maintainer: Your Name <your@email.com>
 pkgname=archlinux-deckify-git
 _pkgname=ArchLinuxDeckify
-pkgver=r42.62d7f29
+pkgver=r43.9edab2b
 pkgrel=1
 pkgdesc="Modular SteamOS-like session for Arch with centralized configuration and profile templates"
 arch=('any')
