@@ -1,7 +1,7 @@
 # Maintainer: Your Name <your@email.com>
 pkgname=archlinux-deckify-git
 _pkgname=ArchLinuxDeckify
-pkgver=r46.60f1776
+pkgver=r48.4668177
 pkgrel=1
 pkgdesc="Modular SteamOS-like session for Arch with centralized configuration and profile templates"
 arch=('any')
@@ -51,7 +51,7 @@ package() {
   # 3. Create symlink
   ln -s /opt/steamos-session/steamos-gamemode-enhanced "$pkgdir/usr/bin/steamos-gamemode-enhanced"
   ln -s /opt/steamos-session/steamos-session-launcher "$pkgdir/usr/bin/steamos-session-launcher"
-  ls -s /opt/steamos-session/steamos-session-select "$pkgdir/usr/bin/steamos-session-select"
+  ln -s /opt/steamos-session/steamos-session-select "$pkgdir/usr/bin/steamos-session-select"
 
   # 4. Install Sudoers Override
   cat <<EOF > "$pkgdir/etc/sudoers.d/steamos-session-overrides"
