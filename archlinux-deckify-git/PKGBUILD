@@ -40,15 +40,18 @@ package() {
   mkdir -p "$pkgdir/etc/systemd/system/getty@tty1.service.d"
 
   # 2. Install scripts, config, and the new profile template
-  install -Dm755 steamos-gamemode-enhanced "$pkgdir/opt/steamos-session/"
-  install -Dm755 steamos-session-launcher "$pkgdir/opt/steamos-session/"
+  install -Dm755 steamos-gamemode-enhanced "$pkgdir/opt/steamos-session/steamos-gamemode-enhanced"
+  install -Dm755 steamos-session-launcher "$pkgdir/opt/steamos-session/steamos-session-launcher"
+  install -Dm755 steamos-session-select "$pkgdir/opt/steamos-session/steamos-session-select"
   install -Dm644 steamos-session-config "$pkgdir/opt/steamos-session/config/steamos-session-config"
 
   # Install the .profile template
   install -Dm644 .bash_profile "$pkgdir/opt/steamos-session/config/.bash_profile"
 
   # 3. Create symlink
-  ln -s /opt/steamos-session/steamos-session-launcher "$pkgdir/usr/bin/steamos-session"
+  ln -s /opt/steamos-session/steamos-gamemode-enhanced "$pkgdir/usr/bin/steamos-gamemode-enhanced"
+  ln -s /opt/steamos-session/steamos-session-launcher "$pkgdir/usr/bin/steamos-session-launcher"
+  ls -s /opt/steamos-session/steamos-session-select "$pkgdir/usr/bin/steamos-session-select"
 
   # 4. Install Sudoers Override
   cat <<EOF > "$pkgdir/etc/sudoers.d/steamos-session-overrides"
