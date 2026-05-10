@@ -74,11 +74,6 @@ package() {
 %wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/steamos-gamemode-enhanced
 
 # Change Virtual Terminals (All 6 Supported Archlinux TTY Termianls)
-%wheel ALL=(ALL) NOPASSWD: /usr/bin/chvt 1
-%wheel ALL=(ALL) NOPASSWD: /usr/bin/chvt 2
-%wheel ALL=(ALL) NOPASSWD: /usr/bin/chvt 3
-%wheel ALL=(ALL) NOPASSWD: /usr/bin/chvt 4
-%wheel ALL=(ALL) NOPASSWD: /usr/bin/chvt 5
 %wheel ALL=(ALL) NOPASSWD: /usr/bin/chvt 6
 
 # Start and Stop LightDM Display Manager
