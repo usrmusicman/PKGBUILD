@@ -1,18 +1,21 @@
 # Maintainer: Your Name <your@email.com>
 pkgname=archlinux-deckify-git
 _pkgname=ArchLinuxDeckify
-pkgver=r48.4668177
+pkgver=r52.4fce18d
 pkgrel=1
 pkgdesc="Modular SteamOS-like session for Arch with centralized configuration and profile templates"
 arch=('any')
 url="https://github.com/usrmusicman/ArchLinuxDeckify"
 license=('GPL')
-
-depends=('gamescope' 'steam' 'steam-devices' 'bash' 'sudo' 'scx-scheds' 'pipewire')
+depends=('gamescope' 'steam' 'steam-devices' 'bash' 'sudo' 'scx-scheds' 'scx-tools' 'pipewire' 'iw')
 
 optdepends=(
   'nvidia-utils: For Nvidia GPU support'
+  'gdm: For automatic login support'
+  'lightdm: For automatic login support'
   'lib32-nvidia-utils: For Nvidia 32-bit gaming'
+  'plasma-login-manager: For automatic login support'
+  'sddm: For automatic login support'
   'xf86-video-amdgpu: For AMD GPU support'
   'vulkan-radeon: For AMD Vulkan support'
   'vulkan-intel: For Intel GPU support'
@@ -33,13 +36,15 @@ pkgver() {
 package() {
   cd "$_pkgname"
 
-  # 1. Create directory structure
-  mkdir -p "$pkgdir/opt/steamos-session/config"
+  # Create Directories
+  mkdir -p "$pkgdir/etc/systemd/system/getty@tty6.service.d"
   mkdir -p "$pkgdir/usr/bin"
   mkdir -p "$pkgdir/etc/sudoers.d"
-  mkdir -p "$pkgdir/etc/systemd/system/getty@tty1.service.d"
 
-  # 2. Install scripts, config, and the new profile template
+  # Change directory permissions
+  chmod 750 "$pkgdir/etc/sudoers.d"
+
+  # Install scripts, config, and the new profile template
   install -Dm755 steamos-gamemode-enhanced "$pkgdir/opt/steamos-session/steamos-gamemode-enhanced"
   install -Dm755 steamos-session-launcher "$pkgdir/opt/steamos-session/steamos-session-launcher"
   install -Dm755 steamos-session-select "$pkgdir/opt/steamos-session/steamos-session-select"
@@ -48,12 +53,18 @@ package() {
   # Install the .profile template
   install -Dm644 .bash_profile "$pkgdir/opt/steamos-session/config/.bash_profile"
 
-  # 3. Create symlink
+  # Install SteamOS games session launcher
+  install -Dm644 "SteamOS (Gaming Mode).desktop" "$pkgdir/usr/share/applications/SteamOS (Gaming Mode).desktop"
+
+  # Install SteamOS Icon
+  install -Dm644 distributor-logo-steamdeck.svg "$pkgdir/usr/share/icons/distributor-logo-steamdeck.svg"
+
+  # Create symlink
   ln -s /opt/steamos-session/steamos-gamemode-enhanced "$pkgdir/usr/bin/steamos-gamemode-enhanced"
   ln -s /opt/steamos-session/steamos-session-launcher "$pkgdir/usr/bin/steamos-session-launcher"
   ln -s /opt/steamos-session/steamos-session-select "$pkgdir/usr/bin/steamos-session-select"
 
-  # 4. Install Sudoers Override
+  # Install Sudoers Override
   cat <<EOF > "$pkgdir/etc/sudoers.d/steamos-session-overrides"
 # Nvidia specific power limits changes
 %wheel ALL=(ALL) NOPASSWD: /usr/bin/nvidia-smi
@@ -61,11 +72,38 @@ package() {
 
 # SteamOS Enhanced Gamemode
 %wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/steamos-gamemode-enhanced
+
+# Change Virtual Terminals (All 6 Supported Archlinux TTY Termianls)
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/chvt 1
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/chvt 2
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/chvt 3
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/chvt 4
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/chvt 5
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/chvt 6
+
+# Start and Stop LightDM Display Manager
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/systemctl start lightdm.service
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/systemctl stop lightdm.service
+
+# Start and Stop GDM Display Manager
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/systemctl start gdm.service
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/systemctl stop gdm.service
+
+# Start and Stop Plasma Display Manager
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/systemctl start plasmalogin.service
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/systemctl stop plasmalogin.service
+
+# Start and Stop SDDM Display Manager
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/systemctl start sddm.service
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/systemctl stop sddm.service
+
+# Force end the tty6 session
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/openvt -c 6 -s --force -- /usr/bin/exit
 EOF
   chmod 440 "$pkgdir/etc/sudoers.d/steamos-session-overrides"
 
   # 5. Install Getty Override Template
-  cat <<EOF > "$pkgdir/etc/systemd/system/getty@tty1.service.d/override.conf"
+  cat <<EOF > "$pkgdir/etc/systemd/system/getty@tty6.service.d/override.conf"
 [Service]
 ExecStart=
 ExecStart=-/sbin/agetty --autologin @USER@ --noclear %I 38400 linux

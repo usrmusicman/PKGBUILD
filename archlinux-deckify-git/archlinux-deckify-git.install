@@ -3,11 +3,11 @@ post_install() {
   REAL_USER=${SUDO_USER:-$USER}
 
   echo "==> Configuring autologin for user: $REAL_USER"
-  sed -i "s/@USER@/$REAL_USER/g" /etc/systemd/system/getty@tty1.service.d/override.conf
+  sed -i "s/@USER@/$REAL_USER/g" /etc/systemd/system/getty@tty6.service.d/override.conf
 
-  echo "==> Reloading systemd and enabling getty@tty1"
+  echo "==> Reloading systemd and enabling getty@tty6"
   systemctl daemon-reload
-  systemctl enable getty@tty1.service
+  systemctl enable getty@tty6.service
 
   echo " "
   echo "==> FINAL SETUP STEPS:"
@@ -28,5 +28,5 @@ post_upgrade() {
 }
 
 pre_remove() {
-  systemctl disable getty@tty1.service
+  systemctl disable getty@tty6.service
 }
