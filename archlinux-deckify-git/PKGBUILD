@@ -1,19 +1,24 @@
 # Maintainer: Your Name <your@email.com>
+# Sysctl Tweaks
+
 pkgname=archlinux-deckify-git
 _pkgname=ArchLinuxDeckify
-pkgver=r53.1d0a7e9
+pkgver=r69.78ce13f
 pkgrel=1
 pkgdesc="Modular SteamOS-like session for Arch with centralized configuration and profile templates"
 arch=('any')
 url="https://github.com/usrmusicman/ArchLinuxDeckify"
 license=('GPL')
-depends=('gamescope' 'steam' 'steam-devices' 'bash' 'sudo' 'scx-scheds' 'scx-tools' 'pipewire' 'iw')
+depends=('gamemode' 'gamescope' 'steam' 'steam-devices' 'bash' 'sudo' 'scx-scheds' 'scx-tools' 'pipewire' 'iw')
 
 optdepends=(
   'nvidia-utils: For Nvidia GPU support'
   'gdm: For automatic login support'
   'lightdm: For automatic login support'
+  'lib32-gamemode: For regular gamemode 32-bit support'
   'lib32-nvidia-utils: For Nvidia 32-bit gaming'
+  'lib32-vulkan-radeon: For AMD Vulkan 32-bit support'
+  'lib32-vulkan-intel: For Intel GPU 32-bit support'
   'plasma-login-manager: For automatic login support'
   'sddm: For automatic login support'
   'xf86-video-amdgpu: For AMD GPU support'
@@ -38,8 +43,9 @@ package() {
 
   # Create Directories
   mkdir -p "$pkgdir/etc/systemd/system/getty@tty6.service.d"
-  mkdir -p "$pkgdir/usr/bin"
   mkdir -p "$pkgdir/etc/sudoers.d"
+  mkdir -p "$pkgdir/etc/sysctl.d"
+  mkdir -p "$pkgdir/usr/bin"
 
   # Change directory permissions
   chmod 750 "$pkgdir/etc/sudoers.d"
@@ -48,6 +54,7 @@ package() {
   install -Dm755 steamos-gamemode-enhanced "$pkgdir/opt/steamos-session/steamos-gamemode-enhanced"
   install -Dm755 steamos-session-launcher "$pkgdir/opt/steamos-session/steamos-session-launcher"
   install -Dm755 steamos-session-select "$pkgdir/opt/steamos-session/steamos-session-select"
+  install -Dm755 steamos-session-switcher "$pkgdir/opt/steamos-session/steamos-session-switcher"
   install -Dm644 steamos-session-config "$pkgdir/opt/steamos-session/config/steamos-session-config"
 
   # Install the .profile template
@@ -63,6 +70,7 @@ package() {
   ln -s /opt/steamos-session/steamos-gamemode-enhanced "$pkgdir/usr/bin/steamos-gamemode-enhanced"
   ln -s /opt/steamos-session/steamos-session-launcher "$pkgdir/usr/bin/steamos-session-launcher"
   ln -s /opt/steamos-session/steamos-session-select "$pkgdir/usr/bin/steamos-session-select"
+  ln -s /opt/steamos-session/steamos-session-switcher "$pkgdir/usr/bin/steamos-session-switcher"
 
   # Install Sudoers Override
   cat <<EOF > "$pkgdir/etc/sudoers.d/steamos-session-overrides"
@@ -72,6 +80,9 @@ package() {
 
 # SteamOS Enhanced Gamemode
 %wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/steamos-gamemode-enhanced
+
+# SteamOS TTY Handoff
+%wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/steamos-session-switcher
 
 # Change Virtual Terminals (All 6 Supported Archlinux TTY Termianls)
 %wheel ALL=(ALL) NOPASSWD: /usr/bin/chvt 6
@@ -93,7 +104,7 @@ package() {
 %wheel ALL=(ALL) NOPASSWD: /usr/bin/systemctl stop sddm.service
 
 # Force end the tty6 session
-%wheel ALL=(ALL) NOPASSWD: /usr/bin/openvt -c 6 -s --force -- /usr/bin/exit
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/openvt *
 EOF
   chmod 440 "$pkgdir/etc/sudoers.d/steamos-session-overrides"
 
@@ -102,5 +113,46 @@ EOF
 [Service]
 ExecStart=
 ExecStart=-/sbin/agetty --autologin @USER@ --noclear %I 38400 linux
+EOF
+
+   # # Sysctl Tweaks
+   cat <<EOF > "$pkgdir/etc/sysctl.d/10-memory.conf"
+# Lower swappiness to favor RAM for your creative apps
+vm.swappiness = 1
+# Reluctantly reclaim file system caches for snappier navigation
+vm.vfs_cache_pressure = 50
+EOF
+
+   cat <<EOF > "$pkgdir/etc/sysctl.d/20-writeback.conf"
+# Start background flushing at 64MB of dirty data
+vm.dirty_background_bytes = 67108864
+# Force system-wide flushing at 256MB to prevent massive IO spikes
+vm.dirty_bytes = 268435456
+EOF
+
+   cat <<EOF > "$pkgdir/etc/sysctl.d/30-responsiveness.conf"
+# Allow more memory maps (Critical for heavy Steam games and Wine)
+vm.max_map_count = 1048576
+EOF
+
+   cat <<EOF > "$pkgdir/etc/sysctl.d/40-netowrk.conf"
+# Increases the maximum number of packets queued on the input side.
+net.core.netdev_max_backlog = 5000
+# Reduces the handshake overhead for connections.
+net.ipv4.tcp_fastopen = 3
+EOF
+
+   cat <<EOF > "$pkgdir/etc/sysctl.d/50-rt_preempt.conf"
+# Give RT threads 100% of CPU time
+kernel.sched_rt_runtime_us = -1
+# NUMA Balancing
+kernel.numa_balancing = 0
+EOF
+
+   cat <<EOF > "$pkgdir/etc/sysctl.d/60-timers.conf"
+# Increases the interval (in seconds) at which the kernel gathers VM statistics.
+vm.stat_interval = 10
+# On multi-core systems, the kernel tries to move timers to idle CPUs to save power.
+kernel.timer_migration = 0
 EOF
 }

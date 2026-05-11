@@ -20,6 +20,10 @@ post_install() {
   echo "     Append the contents of /opt/steamos-session/config/.bash_profile to your ~/.bash_profile"
   echo "     cat /opt/steamos-session/config/.bash_profile >> ~/.bash_profile"
   echo " "
+  echo "  3. SET GAMESCOPE GPU PRIORITY CAP:"
+  echo "     Set gamescope's GPU threading priority"
+  echo "     sudo setcap 'cap_sys_nice=eip' $(which gamescope)"
+  echo " "
   echo "==> Setup complete. Reboot to start your SteamOS session on TTY1."
 }
 
