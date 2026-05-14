@@ -11,6 +11,6 @@ pkgbase = pipewire-control-gui
 	source = Pipewire Control GUI.desktop
 	source = pipewire-control-gui
 	sha256sums = 65fd2ca2d3b3fb8482a1cb030eaccf6c1d5b70501e8b71041334653a7e2387e7
-	sha256sums = 9a8e15297ce50dec2ef5172b47a8d0609cdd5c19de4eda1cd1275b77c73a1edd
+	sha256sums = f27c76400710e4420b61b053752071d99ad942b7782f38099f2090376a4cdf95
 
 pkgname = pipewire-control-gui
