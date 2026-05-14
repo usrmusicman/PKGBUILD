@@ -1,179 +1,135 @@
 #!/bin/sh
 
-# Dependencies: pipewire-jack scx-scheds
-# Optional Dependcies: kdialog zenity
+# Dependencies: pipewire-jack, scx-scheds, kdialog/zenity (optional)
 
-## KDialog Prompts
+# Default Settings
+AUDIO_BUFFER="2048"
+AUDIO_SAMPLE_RATE="48000"
+SCHEDULER="default"
+SCHED_MODE="default"
+APP_PATH=""
 
-kde_pipewire_session() {
-    AUDIO_BUFFER=`kdialog --combobox "Select an audio buffer" "default" "16" "24" "32" "48" "64" "96" "128" "192" "256" "384" "512" "768" "1024" "2048" "4096" "8192"`
-    AUDIO_SAMPLE_RATE=`kdialog --combobox "Select a samplerate" "default" "44100" "48000" "88200" "96000" "192000"`
-}
-
-## Zenity Prompts
-
-zenity_pipewire_session() {
-    AUDIO_BUFFER=`zenity --list --title="Select an audio buffer" --column="Options" "default" "16" "24" "32" "48" "64" "96" "128" "192" "256" "384" "512" "768" "1024" "2048" "4096" "8192"`
-    AUDIO_SAMPLE_RATE=`zenity --list --title="Select a samplerate" --column="Options" "default" "44100" "48000" "88200" "96000" "192000"`
-}
-
-## Program Logic
-
-pw_session_logic() {
-    # Set audio buffer period
-    case $AUDIO_BUFFER in
-        default)
-            pw-metadata -n settings 0 clock.force-quantum 0 > /dev/null
-            ;;
-
-        16)
-            pw-metadata -n settings 0 clock.force-quantum 16 > /dev/null
-            ;;
-
-        24)
-            pw-metadata -n settings 0 clock.force-quantum 24 > /dev/null
-            ;;
-
-        32)
-            pw-metadata -n settings 0 clock.force-quantum 32 > /dev/null
-            ;;
-
-        48)
-            pw-metadata -n settings 0 clock.force-quantum 48 > /dev/null
-            ;;
-
-        64)
-            pw-metadata -n settings 0 clock.force-quantum 64 > /dev/null
-            ;;
-
-        96)
-            pw-metadata -n settings 0 clock.force-quantum 96 > /dev/null
-            ;;
-
-        128)
-            pw-metadata -n settings 0 clock.force-quantum 128 > /dev/null
-            ;;
-
-        192)
-            pw-metadata -n settings 0 clock.force-quantum 192 > /dev/null
-            ;;
-
-        256)
-            pw-metadata -n settings 0 clock.force-quantum 256 > /dev/null
-            ;;
-
-        384)
-            pw-metadata -n settings 0 clock.force-quantum 384 > /dev/null
-            ;;
-
-        512)
-            pw-metadata -n settings 0 clock.force-quantum 512 > /dev/null
-            ;;
-
-        768)
-            pw-metadata -n settings 0 clock.force-quantum 768 > /dev/null
-            ;;
-
-        1024)
-            pw-metadata -n settings 0 clock.force-quantum 1024 > /dev/null
-            ;;
-
-        2048)
-            pw-metadata -n settings 0 clock.force-quantum 2048 > /dev/null
-            ;;
-
-        4096)
-            pw-metadata -n settings 0 clock.force-quantum 4096 > /dev/null
-            ;;
-
-        8192)
-            pw-metadata -n settings 0 clock.force-quantum 8192 > /dev/null
-            ;;
-
-        *)
-            unset $AUDIO_BUFFER
-            ;;
+# ------------------------------------------------------------------------------
+# 1. CLI SWITCH PARSING
+# ------------------------------------------------------------------------------
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        -q) AUDIO_BUFFER="$2"; shift 2 ;;
+        -r) AUDIO_SAMPLE_RATE="$2"; shift 2 ;;
+        -s) SCHEDULER="$2"; shift 2 ;;
+        -m) SCHED_MODE="$2"; shift 2 ;;
+        -l) APP_PATH="$2"; shift 2 ;;
+        -h|--help)
+            echo "Usage: sudo $0 [OPTIONS]"
+            echo "  -q <quantum>    Buffer size (16-8192)"
+            echo "  -r <rate>       Sample rate (44100-192000)"
+            echo "  -l <cmd>        Path to application executable"
+            echo "  -s <scheduler>  SCX Scheduler (lavd, rustland, flash, etc.)"
+            echo "  -m <mode>       Behavioral profile (gaming, lowlatency, etc.)"
+            echo "  -h <help>       Show this help message"
+            exit 0 ;;
+        *) echo "Unknown option: $1"; exit 1 ;;
     esac
+done
 
-    # Set audio samplerate for pipewire
-    case $AUDIO_SAMPLE_RATE in
-        default)
-            pw-metadata -n settings 0 clock.force-rate 0 > /dev/null
-            ;;
-
-        44100)
-            pw-metadata -n settings 0 clock.force-rate 44100 > /dev/null
-            ;;
-
-        48000)
-            pw-metadata -n settings 0 clock.force-rate 48000 > /dev/null
-            ;;
-
-        88200)
-            pw-metadata -n settings 0 clock.force-rate 88200 > /dev/null
-            ;;
-
-        96000)
-            pw-metadata -n settings 0 clock.force-rate 96000 > /dev/null
-            ;;
-
-        192000)
-            pw-metadata -n settings 0 clock.force-rate 192000 > /dev/null
-            ;;
-
-        *)
-            unset $AUDIO_SAMPLE_RATE
-            ;;
-    esac
+# ------------------------------------------------------------------------------
+# 2. VALIDATION & GUI/CLI FALLBACKS
+# ------------------------------------------------------------------------------
+validate_input() {
+    val=$1; min=$2; max=$3
+    if [[ "$val" =~ ^[0-9]+$ ]] && [ "$val" -ge "$min" ] && [ "$val" -le "$max" ]; then
+        return 0
+    fi
+    return 1
 }
 
-## Session Tray Output
+if [ -z "$APP_PATH" ] || [ -z "$AUDIO_BUFFER" ] || [ -z "$AUDIO_SAMPLE_RATE" ]; then
+    if command -v kdialog >/dev/null; then
+        [ -z "$APP_PATH" ] && APP_PATH=$(kdialog --getopenfilename /usr/bin "Executable Files (*)")
+        [ -z "$AUDIO_BUFFER" ] && AUDIO_BUFFER=$(kdialog --combobox "Select Buffer" "16" "32" "64" "128" "256" "512" "1024" "2048" "4096" "8192")
+        [ -z "$AUDIO_SAMPLE_RATE" ] && AUDIO_SAMPLE_RATE=$(kdialog --combobox "Select Rate" "44100" "48000" "88200" "96000" "192000")
+        SCHEDULER=$(kdialog --combobox "Select SCX Scheduler" "lavd" "rustland" "flash" "bpfland" "rusty" "cosmos" "beerland" "p2dq" "tickless" "default")
+        SCHED_MODE=$(kdialog --combobox "Select Mode Profile" "lowlatency" "gaming" "balanced" "powersave")
+    elif command -v zenity >/dev/null; then
+        [ -z "$APP_PATH" ] && APP_PATH=$(zenity --file-selection --title="Select Application")
+        [ -z "$AUDIO_BUFFER" ] && AUDIO_BUFFER=$(zenity --list --column="Buffer" "16" "32" "64" "128" "256" "512" "1024" "2048" "4096" "8192")
+        [ -z "$AUDIO_SAMPLE_RATE" ] && AUDIO_SAMPLE_RATE=$(zenity --list --column="Rate" "44100" "48000" "88200" "96000" "192000")
+        SCHEDULER=$(zenity --list --title="Scheduler" --column="Options" "lavd" "rustland" "flash" "bpfland" "rusty" "cosmos" "beerland" "p2dq" "tickless" "default")
+        SCHED_MODE=$(zenity --list --title="Mode" --column="Options" "lowlatency" "gaming" "balanced" "powersave")
+    else
+        # CLI Selection Logic
+        [ -z "$APP_PATH" ] && read -p "Enter App Path: " APP_PATH
+        while ! validate_input "$AUDIO_BUFFER" 16 8192; do read -p "Enter Buffer (16-8192): " AUDIO_BUFFER; done
+        while ! validate_input "$AUDIO_SAMPLE_RATE" 44100 192000; do read -p "Enter Rate (44100-192000): " AUDIO_SAMPLE_RATE; done
 
-pw_session_systray() {
-    # Display a notification
-    if [[ ! -z "$AUDIO_BUFFER" ]] && [[ ! -z "$AUDIO_SAMPLE_RATE" ]]; then
-        kdialog --title "Pipweire settings changed" --passivepopup "Set the pipewire audio buffer period to \"$AUDIO_BUFFER\" and audio samplerate to \"$AUDIO_SAMPLE_RATE\"." 10
+        echo "Select Scheduler: 1) lavd 2) rustland 3) flash 4) bpfland 5) rusty 6) default"
+        read -p "Choice [1-6]: " S_CHOICE
+        case $S_CHOICE in
+            1) SCHEDULER="lavd" ;;
+            2) SCHEDULER="rustland" ;;
+            3) SCHEDULER="flash" ;;
+            4) SCHEDULER="bpfland" ;;
+            5) SCHEDULER="rusty" ;;
+            6) SCHEDULER="cosmos" ;;
+            7) SCHEDULER="beerland" ;;
+            8) SCHEDULER="p2dq" ;;
+            9) SCHEDULER="tickless" ;;
+            *) SCHEDULER="default" ;;
+        esac
+
+        if [ "$SCHEDULER" != "default" ]; then
+            echo "Select Mode: 1) lowlatency 2) gaming 3) balanced 4) powersave 5) lowlatency 6) default"
+            read -p "Choice [1-5]: " M_CHOICE
+            case $M_CHOICE in
+                1) SCHED_MODE="lowlatency" ;;
+                2) SCHED_MODE="gaming" ;;
+                3) SCHED_MODE="balanced" ;;
+                4) SCHED_MODE="powersave" ;;
+                *) SCHED_MODE="default" ;;
+            esac
+        fi
     fi
-}
-
-## Main Program
-
-MenuEnable=True
-
-if [[ "$XDG_SESSION_DESKTOP" == "KDE" ]]; then
-
-    if command -v "/usr/bin/kdialog" &> /dev/null; then
-
-        ## Pipewire session config menu
-        kde_pipewire_session
-        pw_session_logic
-        pw_session_systray
-
-    elif command -v "/usr/bin/zenity" &> /dev/null; then
-
-        ## Pipewire session config menu
-        zenity_pipewire_session
-        pw_session_logic
-        pw_session_systray
-
-    fi
-
-else
-
-    if command -v "/usr/bin/zenity" &> /dev/null; then
-
-        ## Pipewire session config menu
-        zenity_pipewire_session
-        pw_session_logic
-        pw_session_systray
-
-    elif command -v "/usr/bin/kdialog" &> /dev/null; then
-
-        ## Pipewire session config menu
-        kde_pipewire_session
-        pw_session_logic
-        pw_session_systray
-
-    fi
-
 fi
+
+# ------------------------------------------------------------------------------
+# 3. NOTIFICATION & EXECUTION
+# ------------------------------------------------------------------------------
+show_notification() {
+    APP_NAME=$(basename "$APP_PATH")
+    MSG="Launching $APP_NAME\nLatency: ${AUDIO_BUFFER}/${AUDIO_SAMPLE_RATE}\nSched: $SCHEDULER ($SCHED_MODE)"
+
+    if command -v kdialog >/dev/null; then
+        kdialog --title "Audio Session Manager" --passivepopup "$MSG" 5
+    elif command -v zenity >/dev/null; then
+        zenity --notification --text="$MSG"
+    else
+        echo -e "\033[1;32m[LOG]\033[0m $MSG"
+    fi
+}
+
+launch_app() {
+    # Check if app exists
+    if [[ ! -x "$(command -v "$APP_PATH")" && ! -f "$APP_PATH" ]]; then
+        echo "Error: Binary not found."
+        exit 1
+    fi
+
+    # Set PipeWire Latency Environment
+    export PIPEWIRE_LATENCY="${AUDIO_BUFFER}/${AUDIO_SAMPLE_RATE}"
+
+    # 2026 High-Performance Environment Variables
+    export PROTON_USE_WOW64=1
+    export WINENTSYNC=1
+    export XDG_SESSION_TYPE=wayland
+
+    show_notification
+
+    # Launch with SCX Scheduler and Mode
+    if [ "$SCHEDULER" != "default" ] && command -v "$SCHEDULER" >/dev/null; then
+        exec "$SCHEDULER" -m "$SCHED_MODE" -- "$APP_PATH"
+    else
+        exec "$APP_PATH"
+    fi
+}
+
+launch_app
