@@ -8,7 +8,7 @@ license=('EULA')
 depends=('alsa-lib' 'bzip2' 'brotli' 'freetype2' 'glibc' 'graphite' 'harfbuzz' 'keyutils' 'krb5' 'libcurl-gnutls' 'libffi' 'libnghttp2' 'libidn2' 'libp11-kit' 'libpng' 'libpsl' 'libssh2' 'libtasn1' 'libunistring' 'libxau' 'libxcb' 'libx11' 'nettle' 'openssl' 'pcre2' 'zlib' 'zstd')
 makedepends=('xdg-user-dirs' 'unzip')
 provides=('head-crusher')
-source=('Head Crusher Linker'
+source=('head-crusher-linker'
         'https://5db5public.s3.amazonaws.com/HeadCrusherLinux.zip')
 sha256sums=('ecdcf0b394fabfd10058c41dc2993ac2c08c7916f0e2d1970620f4ff8d1c1046'
             '103bf1d707f7c7fd1ea36c641d997c701aa8785db21720b9519e7cba6f69b60b')
@@ -25,7 +25,7 @@ package_5db5-headcrusher-data-bin() {
     cp -r "$srcdir/Presets/"* "$pkgdir/usr/lib/5db5/Head Crusher/Presets"
 
     ## Install Head Crusher Linker Script
-    install -Dm755 "$srcdir/Head Crusher Linker" "$pkgdir/usr/bin/Head Crusher Linker"
+    install -Dm755 "$srcdir/head-crusher-linker" "$pkgdir/usr/bin/head-crusher-linker"
 }
 
 package_5db5-headcrusher-lv2-bin() {
