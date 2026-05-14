@@ -1,0 +1,44 @@
+pkgbase=collab3
+pkgname=("${pkgbase}-standalone-bin" "${pkgbase}-vst-bin")
+pkgver=1.0.0
+pkgrel=1
+url="https://github.com/augustofilocamo/superOrgan"
+license=('GPL')
+arch=('x86_64')
+depends=('alsa-lib' 'bzip2' 'brotli' 'freetype2' 'glibc' 'graphite' 'harfbuzz' 'libpng' 'pcre2')
+makedepends=('unzip')
+options=(!strip)
+source=("https://github.com/augustofilocamo/superOrgan/releases/download/v${pkgver}/CollaB3-Installer-${pkgver}.sh"
+		"collab3.desktop"
+		"collab3.png")
+sha256sums=('9e4c14c53ba17e9871147423016f6644f2ca366c1e8c7062e6f63a36127ed381'
+			'fe3506dc73ccc8db3aaad852f89dc44749e34ad8403cc79159a9ff0286f10604'
+			'053a4fde99b6113368cc961f9d52381b1db96043d4497320a8e3794db36dce85')
+
+prepare() {
+	# Extract Plugins
+	cd $srcdir
+	chmod +x "CollaB3-Installer-${pkgver}.sh"
+	sh "CollaB3-Installer-${pkgver}.sh" --tar xf
+}
+
+package_collab3-standalone-bin() {
+	# Dependencies
+	provides=("$pkgbase-standalone")
+	# Install Standalone
+	groups=('pro-audio')
+	pkgdesc="CollaB3 Organ (Standalone)"
+	install -Dm755 "CollaB3" "$pkgdir/usr/bin/CollaB3"
+	# Install Desktop File
+	install -Dm644 "collab3.desktop" "$pkgdir/usr/share/applications/collab3.desktop"
+	install -Dm644 "collab3.png" "$pkgdir/usr/share/icons/collab3.png"
+}
+
+package_collab3-vst-bin() {
+	# Dependencies
+	provides=("$pkgbase-vst")
+	# Install VST Plugin
+	groups=('pro-audio' 'vst-plugins')
+	pkgdesc="CollaB3 Organ (VST)"
+	install -Dm644 "CollaB3.so" "$pkgdir/usr/lib/vst/collab3.so"
+}

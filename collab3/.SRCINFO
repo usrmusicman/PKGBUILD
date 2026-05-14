@@ -1,0 +1,34 @@
+pkgbase = collab3
+	pkgver = 1.0.0
+	pkgrel = 1
+	url = https://github.com/augustofilocamo/superOrgan
+	arch = x86_64
+	license = GPL
+	makedepends = unzip
+	depends = alsa-lib
+	depends = bzip2
+	depends = brotli
+	depends = freetype2
+	depends = glibc
+	depends = graphite
+	depends = harfbuzz
+	depends = libpng
+	depends = pcre2
+	options = !strip
+	source = https://github.com/augustofilocamo/superOrgan/releases/download/v1.0.0/CollaB3-Installer-1.0.0.sh
+	source = collab3.desktop
+	source = collab3.png
+	sha256sums = 9e4c14c53ba17e9871147423016f6644f2ca366c1e8c7062e6f63a36127ed381
+	sha256sums = fe3506dc73ccc8db3aaad852f89dc44749e34ad8403cc79159a9ff0286f10604
+	sha256sums = 053a4fde99b6113368cc961f9d52381b1db96043d4497320a8e3794db36dce85
+
+pkgname = collab3-standalone-bin
+	pkgdesc = CollaB3 Organ (Standalone)
+	groups = pro-audio
+	provides = collab3-standalone
+
+pkgname = collab3-vst-bin
+	pkgdesc = CollaB3 Organ (VST)
+	groups = pro-audio
+	groups = vst-plugins
+	provides = collab3-vst
