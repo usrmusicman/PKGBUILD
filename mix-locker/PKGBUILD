@@ -8,7 +8,7 @@ license=('EULA')
 depends=('alsa-lib' 'bzip2' 'brotli' 'freetype2' 'glibc' 'graphite' 'harfbuzz' 'keyutils' 'krb5' 'libcurl-gnutls' 'libffi' 'libnghttp2' 'libidn2' 'libp11-kit' 'libpng' 'libpsl' 'libssh2' 'libtasn1' 'libunistring' 'libxau' 'libxcb' 'libx11' 'nettle' 'openssl' 'pcre2' 'zlib' 'zstd')
 makedepends=('xdg-user-dirs' 'unzip')
 provides=('mix-locker')
-source=('Mix Locker Linker'
+source=('mix-locker-linker'
         'mix-locker.png'
         'https://audioassaultdownloads.s3.amazonaws.com/AmpLocker/AmpLocker109/MixLockerLinux.zip')
 sha256sums=('6ab1c9f9aafe4078de8f8f191e94dab3e9bb1ed0b60b2a77b927affe7cd46073'
@@ -27,7 +27,7 @@ package_mix-locker-data-bin() {
     cp -r "$srcdir/MixLockerData/"* "$pkgdir/usr/lib/MixLockerData"
 
     ## Install Mix Locker Linker Script
-    install -Dm755 "$srcdir/Mix Locker Linker" "$pkgdir/usr/bin/Mix Locker Linker"
+    install -Dm755 "$srcdir/mix-locker-linker" "$pkgdir/usr/bin/mix-locker-linker"
 }
 
 package_mix-locker-lv2-bin() {
