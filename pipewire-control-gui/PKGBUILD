@@ -1,10 +1,10 @@
 pkgname=pipewire-control-gui
-pkgver=1.1.0
+pkgver=1.3.0
 pkgrel=1
 arch=('x86_64')
 url="https://github.com/usrmusicman/PKGBUILDS"
 license=('EULA')
-depends=('pipewire' 'pipewire-jack' 'scx-scheds')
+depends=('pipewire' 'pipewire-jack' 'scx-scheds' 'scx-tools')
 optdepnds=('kdialog: A utility for displaying dialog boxes from shell scripts'
           'zenity: Display graphical dialog boxes from shell scripts')
 makedepends=('git')
@@ -12,7 +12,7 @@ pkgdesc="Pipewire Session Control"
 source=("Pipewire Control GUI.desktop"
         "pipewire-control-gui")
 sha256sums=('65fd2ca2d3b3fb8482a1cb030eaccf6c1d5b70501e8b71041334653a7e2387e7'
-            '4ed011edcb39470c0043cc2b8d33bd704577ee3cc1bd78a7d53902240a6ab157')
+            '9a8e15297ce50dec2ef5172b47a8d0609cdd5c19de4eda1cd1275b77c73a1edd')
 
 package() {
     ## Install Script
@@ -20,4 +20,15 @@ package() {
 
     ## Install Menu Entries
     install -Dm644 "${srcdir}/Pipewire Control GUI.desktop" "$pkgdir/usr/share/applications/Pipewire Control GUI.desktop"
+
+    ## Create sudoer overrides directory
+    mkdir -p "$pkgdir/etc/sudoers.d"
+    chmod 750 "$pkgdir/etc/sudoers.d"
+
+    ## Create Audio Control Overrides
+    cat <<EOF > "$pkgdir/etc/sudoers.d/pipewire-audio-control-overrides"
+# SteamOS TTY Handoff
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/pipewire-control-gui *
+EOF
+  chmod 440 "$pkgdir/etc/sudoers.d/pipewire-audio-control-overrides"
 }

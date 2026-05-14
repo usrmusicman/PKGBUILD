@@ -2,13 +2,6 @@
 
 # Dependencies: pipewire-jack, scx-scheds, kdialog/zenity (optional)
 
-# Default Settings
-AUDIO_BUFFER="2048"
-AUDIO_SAMPLE_RATE="48000"
-SCHEDULER="default"
-SCHED_MODE="default"
-APP_PATH=""
-
 # ------------------------------------------------------------------------------
 # 1. CLI SWITCH PARSING
 # ------------------------------------------------------------------------------
@@ -45,15 +38,15 @@ validate_input() {
 
 if [ -z "$APP_PATH" ] || [ -z "$AUDIO_BUFFER" ] || [ -z "$AUDIO_SAMPLE_RATE" ]; then
     if command -v kdialog >/dev/null; then
-        [ -z "$APP_PATH" ] && APP_PATH=$(kdialog --getopenfilename /usr/bin "Executable Files (*)")
-        [ -z "$AUDIO_BUFFER" ] && AUDIO_BUFFER=$(kdialog --combobox "Select Buffer" "16" "32" "64" "128" "256" "512" "1024" "2048" "4096" "8192")
-        [ -z "$AUDIO_SAMPLE_RATE" ] && AUDIO_SAMPLE_RATE=$(kdialog --combobox "Select Rate" "44100" "48000" "88200" "96000" "192000")
-        SCHEDULER=$(kdialog --combobox "Select SCX Scheduler" "lavd" "rustland" "flash" "bpfland" "rusty" "cosmos" "beerland" "p2dq" "tickless" "default")
-        SCHED_MODE=$(kdialog --combobox "Select Mode Profile" "lowlatency" "gaming" "balanced" "powersave")
+        APP_PATH=$(kdialog --getopenfilename /usr/bin "Executable Files (*)")
+        AUDIO_BUFFER=$(kdialog --combobox "Buffer" "16" "24" "32" "48" "64" "96" "128" "192" "256" "384" "512" "768" "1024" "1536" "2048" "3072" "4096" "6144" "8192")
+        AUDIO_SAMPLE_RATE=$(kdialog --combobox "Rate" "44100" "48000" "88200" "96000" "192000")
+        SCHEDULER=$(kdialog --combobox "Scheduler" "lavd" "rustland" "flash" "bpfland" "rusty" "cosmos" "beerland" "p2dq" "tickless" "default")
+        SCHED_MODE=$(kdialog --combobox "Mode" "lowlatency" "gaming" "balanced" "powersave")
     elif command -v zenity >/dev/null; then
-        [ -z "$APP_PATH" ] && APP_PATH=$(zenity --file-selection --title="Select Application")
-        [ -z "$AUDIO_BUFFER" ] && AUDIO_BUFFER=$(zenity --list --column="Buffer" "16" "32" "64" "128" "256" "512" "1024" "2048" "4096" "8192")
-        [ -z "$AUDIO_SAMPLE_RATE" ] && AUDIO_SAMPLE_RATE=$(zenity --list --column="Rate" "44100" "48000" "88200" "96000" "192000")
+        APP_PATH=$(zenity --file-selection --title="Select Application")
+        AUDIO_BUFFER=$(zenity --list --column="Buffer" "16" "24" "32" "48" "64" "96" "128" "192" "256" "384" "512" "768" "1024" "1536" "2048" "3072" "4096" "6144" "8192")
+        AUDIO_SAMPLE_RATE=$(zenity --list --column="Rate" "44100" "48000" "88200" "96000" "192000")
         SCHEDULER=$(zenity --list --title="Scheduler" --column="Options" "lavd" "rustland" "flash" "bpfland" "rusty" "cosmos" "beerland" "p2dq" "tickless" "default")
         SCHED_MODE=$(zenity --list --title="Mode" --column="Options" "lowlatency" "gaming" "balanced" "powersave")
     else
@@ -125,11 +118,10 @@ launch_app() {
     show_notification
 
     # Launch with SCX Scheduler and Mode
-    if [ "$SCHEDULER" != "default" ] && command -v "$SCHEDULER" >/dev/null; then
-        exec "$SCHEDULER" -m "$SCHED_MODE" -- "$APP_PATH"
-    else
-        exec "$APP_PATH"
-    fi
+    sudo scxctl stop
+    sudo scxctl start --sched "$SCHEDULER" --mode "$SCHED_MODE"
+    "$APP_PATH"
+
 }
 
 launch_app
