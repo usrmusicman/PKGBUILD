@@ -3,13 +3,13 @@
 
 pkgname=archlinux-deckify-git
 _pkgname=ArchLinuxDeckify
-pkgver=r70.9d9d43b
+pkgver=r75.f9bc8dd
 pkgrel=1
 pkgdesc="Modular SteamOS-like session for Arch with centralized configuration and profile templates"
 arch=('any')
 url="https://github.com/usrmusicman/ArchLinuxDeckify"
 license=('GPL')
-depends=('gamemode' 'gamescope' 'steam' 'steam-devices' 'bash' 'sudo' 'scx-scheds' 'scx-tools' 'pipewire' 'iw')
+depends=('gamemode' 'gamescope' 'steam' 'steam-devices' 'bash' 'realtime-privileges' 'sudo' 'scx-scheds' 'scx-tools' 'pipewire' 'iw')
 
 optdepends=(
   'nvidia-utils: For Nvidia GPU support'
@@ -84,9 +84,6 @@ package() {
 # SteamOS TTY Handoff
 %wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/steamos-session-switcher
 
-# Change Virtual Terminals (All 6 Supported Archlinux TTY Termianls)
-%wheel ALL=(ALL) NOPASSWD: /usr/bin/chvt 6
-
 # Start and Stop LightDM Display Manager
 %wheel ALL=(ALL) NOPASSWD: /usr/bin/systemctl start lightdm.service
 %wheel ALL=(ALL) NOPASSWD: /usr/bin/systemctl stop lightdm.service
@@ -103,11 +100,11 @@ package() {
 %wheel ALL=(ALL) NOPASSWD: /usr/bin/systemctl start sddm.service
 %wheel ALL=(ALL) NOPASSWD: /usr/bin/systemctl stop sddm.service
 
-# Make and Unmask the getty TTY6 service
-%wheel ALL=(ALL) NOPASSWD: /usr/bin/systemctl mask getty@tty6.service
-%wheel ALL=(ALL) NOPASSWD: /usr/bin/systemctl unmask getty@tty6.service
+# Mask and Unmask TTY6 Virtual Terminal
+#%wheel ALL=(ALL) NOPASSWD: /usr/bin/systemctl mask getty@tty6.service
+#%wheel ALL=(ALL) NOPASSWD: /usr/bin/systemctl unmask getty@tty6.service
 
-# Force end the tty6 session
+# Change Virtual Terminal (All Arguments)
 %wheel ALL=(ALL) NOPASSWD: /usr/bin/openvt *
 EOF
   chmod 440 "$pkgdir/etc/sudoers.d/steamos-session-overrides"
@@ -119,7 +116,7 @@ ExecStart=
 ExecStart=-/sbin/agetty --autologin @USER@ --noclear %I 38400 linux
 EOF
 
-   # # Sysctl Tweaks
+   # 6. Sysctl Tweaks
    cat <<EOF > "$pkgdir/etc/sysctl.d/10-memory.conf"
 # Lower swappiness to favor RAM for your creative apps
 vm.swappiness = 1
@@ -132,7 +129,7 @@ EOF
 vm.max_map_count = 1048576
 EOF
 
-   cat <<EOF > "$pkgdir/etc/sysctl.d/30-netowrk.conf"
+   cat <<EOF > "$pkgdir/etc/sysctl.d/30-network.conf"
 # Increases the maximum number of packets queued on the input side.
 net.core.netdev_max_backlog = 5000
 # Reduces the handshake overhead for connections.
@@ -151,5 +148,20 @@ EOF
 vm.stat_interval = 10
 # On multi-core systems, the kernel tries to move timers to idle CPUs to save power.
 kernel.timer_migration = 0
+EOF
+
+  # 7. Install Pacman Hook for Gamescope Capabilities
+  mkdir -p "$pkgdir/usr/share/libalpm/hooks"
+  cat <<EOF > "$pkgdir/usr/share/libalpm/hooks/gamescope-capabilities.hook"
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = gamescope
+
+[Action]
+Description = Restoring setcap 'cap_sys_nice=eip' to gamescope...
+When = PostTransaction
+Exec = /usr/bin/setcap 'cap_sys_nice=eip' /usr/bin/gamescope
 EOF
 }
