@@ -9,7 +9,7 @@ depends=('alsa-lib' 'bzip2' 'brotli' 'freetype2' 'glibc' 'graphite' 'harfbuzz' '
 makedepends=('xdg-user-dirs' 'unzip')
 provides=('5db5-channel')
 source=('https://5db5public.s3.amazonaws.com/Channel551Linux.zip'
-        'Channel551 Linker')
+        'channel551-linker')
 sha256sums=('3363742449270118ce5807c6081ddb7e50537eb76d55720e4662b1a881f851c8'
             '35041e56af62e7d07d1a2920fa1fb0d0af14bb570968e74eab33a57005c797f0')
 
@@ -25,7 +25,7 @@ package_5db5-channel-data-bin() {
     cp -r "$srcdir/Presets"/* "$pkgdir/usr/lib/5db5/Channel551/Presets"
 
     ## Install Double Take Linker Script
-    install -Dm755 "$srcdir/Channel551 Linker" "$pkgdir/usr/bin/Channel551 Linker"
+    install -Dm755 "$srcdir/channel551-linker" "$pkgdir/usr/bin/channel551-linker"
 }
 
 package_5db5-channel-lv2-bin() {
