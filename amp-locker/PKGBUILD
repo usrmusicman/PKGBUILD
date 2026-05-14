@@ -1,6 +1,6 @@
 pkgbase=amp-locker
 pkgname=( ${pkgbase}-{data,standalone,lv2,vst3}-bin )
-pkgver=1.5.0
+pkgver=1.5.1
 pkgrel=1
 arch=('x86_64')
 url="https://audioassault.mx/amplocker"
@@ -8,14 +8,14 @@ license=('EULA')
 depends=('alsa-lib' 'bzip2' 'brotli' 'freetype2' 'glibc' 'graphite' 'harfbuzz' 'keyutils' 'krb5' 'libcurl-gnutls' 'libffi' 'libnghttp2' 'libidn2' 'libp11-kit' 'libpng' 'libpsl' 'libssh2' 'libtasn1' 'libunistring' 'libxau' 'libxcb' 'libx11' 'nettle' 'openssl' 'pcre2' 'zlib' 'zstd')
 makedepends=('xdg-user-dirs')
 provides=('amp-locker')
-source=('Amp Locker.desktop'
-        'Amp Locker Linker'
+source=('amp-locker.desktop'
+        'amp-locker-linker'
         'amp-locker.png'
         'https://audioassaultdownloads.s3.amazonaws.com/AmpLocker/AmpLocker109/AmpLockerLinux.zip')
-sha256sums=('bbeb596d62ed9943294ee5025ba690def02e263b5c9b3b88304ee84607c52f53'
+sha256sums=('22d4bb55ba738634ab5cb0cc768db092d158b642dbdb790ee01ae82088ef4821'
             '7784d4c4cf7bd953b52c34268cfd92dae1e23028e15c77b8e9e3ebd4970d0e80'
             '2ccb54d693ba09c2f86750891f2d1ea090f74fe282c3268617d1519b58f79ad5'
-            'fa2eba942879273e9a1fc7521421bec87297d44a9c66734b0742f855a0744935')
+            '398ea251380be578335a51c644b159a18f981432c52ad4991121ca6fa49dcc29')
 
 package_amp-locker-data-bin() {
     ## Install Asset Data
@@ -29,7 +29,7 @@ package_amp-locker-data-bin() {
     cp -r "$srcdir/AmpLockerData/"* "$pkgdir/usr/lib/AmpLockerData"
 
     ## Install Amp Locker Linker Script
-    install -Dm755 "$srcdir/Amp Locker Linker" "$pkgdir/usr/bin/Amp Locker Linker"
+    install -Dm755 "$srcdir/amp-locker-linker" "$pkgdir/usr/bin/amp-locker-linker"
 }
 
 package_amp-locker-lv2-bin() {
@@ -56,7 +56,7 @@ package_amp-locker-standalone-bin() {
     pkgdesc="Audio Assault Multiamp Simulator (Standalone)"
     depends=('amp-locker-data-bin')
     groups=('pro-audio')
-    install -Dm644 "$srcdir/Amp Locker.desktop" "$pkgdir/usr/share/applications/Amp Locker.desktop"
+    install -Dm644 "$srcdir/amp-locker.desktop" "$pkgdir/usr/share/applications/amp-locker.desktop"
     install -Dm644 "$srcdir/amp-locker.png" "$pkgdir/usr/share/icons/hicolor/192x192/apps/amp-locker.png"
-    install -Dm755 "$srcdir/Amp Locker Standalone" "$pkgdir/usr/bin/Amp Locker Standalone"
+    install -Dm755 "$srcdir/Amp Locker Standalone" "$pkgdir/usr/bin/amp-locker-standalone"
 }
