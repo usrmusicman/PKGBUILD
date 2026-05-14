@@ -3,7 +3,7 @@
 
 pkgname=archlinux-deckify-git
 _pkgname=ArchLinuxDeckify
-pkgver=r69.78ce13f
+pkgver=r70.9d9d43b
 pkgrel=1
 pkgdesc="Modular SteamOS-like session for Arch with centralized configuration and profile templates"
 arch=('any')
@@ -103,6 +103,10 @@ package() {
 %wheel ALL=(ALL) NOPASSWD: /usr/bin/systemctl start sddm.service
 %wheel ALL=(ALL) NOPASSWD: /usr/bin/systemctl stop sddm.service
 
+# Make and Unmask the getty TTY6 service
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/systemctl mask getty@tty6.service
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/systemctl unmask getty@tty6.service
+
 # Force end the tty6 session
 %wheel ALL=(ALL) NOPASSWD: /usr/bin/openvt *
 EOF
@@ -123,33 +127,26 @@ vm.swappiness = 1
 vm.vfs_cache_pressure = 50
 EOF
 
-   cat <<EOF > "$pkgdir/etc/sysctl.d/20-writeback.conf"
-# Start background flushing at 64MB of dirty data
-vm.dirty_background_bytes = 67108864
-# Force system-wide flushing at 256MB to prevent massive IO spikes
-vm.dirty_bytes = 268435456
-EOF
-
-   cat <<EOF > "$pkgdir/etc/sysctl.d/30-responsiveness.conf"
+   cat <<EOF > "$pkgdir/etc/sysctl.d/20-responsiveness.conf"
 # Allow more memory maps (Critical for heavy Steam games and Wine)
 vm.max_map_count = 1048576
 EOF
 
-   cat <<EOF > "$pkgdir/etc/sysctl.d/40-netowrk.conf"
+   cat <<EOF > "$pkgdir/etc/sysctl.d/30-netowrk.conf"
 # Increases the maximum number of packets queued on the input side.
 net.core.netdev_max_backlog = 5000
 # Reduces the handshake overhead for connections.
 net.ipv4.tcp_fastopen = 3
 EOF
 
-   cat <<EOF > "$pkgdir/etc/sysctl.d/50-rt_preempt.conf"
+   cat <<EOF > "$pkgdir/etc/sysctl.d/40-rt_preempt.conf"
 # Give RT threads 100% of CPU time
 kernel.sched_rt_runtime_us = -1
 # NUMA Balancing
 kernel.numa_balancing = 0
 EOF
 
-   cat <<EOF > "$pkgdir/etc/sysctl.d/60-timers.conf"
+   cat <<EOF > "$pkgdir/etc/sysctl.d/50-timers.conf"
 # Increases the interval (in seconds) at which the kernel gathers VM statistics.
 vm.stat_interval = 10
 # On multi-core systems, the kernel tries to move timers to idle CPUs to save power.

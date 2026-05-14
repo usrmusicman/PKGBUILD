@@ -1,6 +1,6 @@
 pkgbase = archlinux-deckify-git
 	pkgdesc = Modular SteamOS-like session for Arch with centralized configuration and profile templates
-	pkgver = r69.78ce13f
+	pkgver = r70.9d9d43b
 	pkgrel = 1
 	url = https://github.com/usrmusicman/ArchLinuxDeckify
 	install = archlinux-deckify-git.install
