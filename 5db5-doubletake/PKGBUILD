@@ -27,7 +27,7 @@ package_5db5-doubletake-data-bin() {
     cp -r "$srcdir/DoubleTakeLinux/Presets"/* "$pkgdir/usr/lib/5db5/DoubleTake/Presets"
 
     ## Install Double Take Linker Script
-    install -Dm755 "$srcdir/Double Take Linker" "$pkgdir/usr/bin/Double Take Linker"
+    install -Dm755 "$srcdir/double-take-linker" "$pkgdir/usr/bin/double-take-linker"
 }
 
 package_5db5-doubletake-lv2-bin() {
