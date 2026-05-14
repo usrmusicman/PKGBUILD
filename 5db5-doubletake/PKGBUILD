@@ -8,7 +8,7 @@ license=('EULA')
 depends=('alsa-lib' 'bzip2' 'brotli' 'freetype2' 'glibc' 'graphite' 'harfbuzz' 'keyutils' 'krb5' 'libcurl-gnutls' 'libffi' 'libnghttp2' 'libidn2' 'libp11-kit' 'libpng' 'libpsl' 'libssh2' 'libtasn1' 'libunistring' 'libxau' 'libxcb' 'libx11' 'nettle' 'openssl' 'pcre2' 'zlib' 'zstd')
 makedepends=('xdg-user-dirs' 'unzip')
 provides=('doubletake')
-source=('Double Take Linker'
+source=('double-take-linker'
         'https://5db5public.s3.amazonaws.com/DoubleTakeLinux.zip')
 sha256sums=('ad956063615ed59a0ba9da17c785c8058d930ade9e12279651bc9c7c42a386b6'
             '385b7cbff913dc3499fca33fce8d2cd5d471455b1aee32aa53a00e60ce68c3f5')
