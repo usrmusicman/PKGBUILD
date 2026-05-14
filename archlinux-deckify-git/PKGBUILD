@@ -3,7 +3,7 @@
 
 pkgname=archlinux-deckify-git
 _pkgname=ArchLinuxDeckify
-pkgver=r76.6616469
+pkgver=r79.87b33ad
 pkgrel=1
 pkgdesc="Modular SteamOS-like session for Arch with centralized configuration and profile templates"
 arch=('any')
@@ -19,6 +19,7 @@ optdepends=(
   'lib32-nvidia-utils: For Nvidia 32-bit gaming'
   'lib32-vulkan-radeon: For AMD Vulkan 32-bit support'
   'lib32-vulkan-intel: For Intel GPU 32-bit support'
+  'pipewire-control-gui: For the Audio Session Control'
   'plasma-login-manager: For automatic login support'
   'sddm: For automatic login support'
   'xf86-video-amdgpu: For AMD GPU support'
