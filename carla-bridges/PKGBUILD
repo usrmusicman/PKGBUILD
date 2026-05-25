@@ -1,0 +1,30 @@
+_release="2.6.0"
+_version="git20251111-1kxstudio1"
+pkgbase=carla-bridges
+pkgname=("carla-bridges-win32-bin" "carla-bridges-win64-bin")
+pkgver=${_release}.${_version/-1kxstudio1/}
+pkgrel=1
+url="https://kx.studio/Applications:Carla"
+source=("https://launchpad.net/~kxstudio-debian/+archive/apps/+files/carla-bridge-win32_${_release}~${_version}_amd64.deb"
+        "https://launchpad.net/~kxstudio-debian/+archive/apps/+files/carla-bridge-win64_${_release}~${_version}_amd64.deb"
+        "https://launchpad.net/~kxstudio-debian/+archive/apps/+files/carla-vst-wine_${_release}~${_version}_amd64.deb")
+sha256sums=('892efeb72ed437aed64cfdd56fc5664f4f9d2dc358e268057b79c7154baa69cf'
+            'c56f84d39df0b53dc50ca196d788c44f4fe9c9e3f858905d47df2132645921cb'
+            'fc1e456912ef1a74523282339ecc6e43edf1d1e09d83034cfd08daf820ebe4a3')
+arch=(i686 x86_64)
+license=(GPL-2.0-or-later)
+groups=("clap-plugins" "lv2-plugins" "pro-audio" "vst-plugins" "vst3-plugins")
+depends=("carla" "wine")
+
+package_carla-bridges-win64-bin() {
+  pkgdesc="Carla Windows bridges (64-bit)"
+  bsdtar -O -xf "carla-bridge-win64_${_release}~${_version}_amd64.deb" data.tar* | bsdtar -C "${pkgdir}" -xf -
+  bsdtar -O -xf "carla-vst-wine_${_release}~${_version}_amd64.deb" data.tar* | bsdtar -C "${pkgdir}" -xf -
+  rm -rf ${pkgdir}/usr/share
+}
+
+package_carla-bridges-win32-bin() {
+  pkgdesc="Carla Windows bridges (32-bit)"
+  bsdtar -O -xf "carla-bridge-win32_${_release}~${_version}_amd64.deb" data.tar* | bsdtar -C "${pkgdir}" -xf -
+  rm -rf ${pkgdir}/usr/share
+}

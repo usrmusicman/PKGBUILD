@@ -1,0 +1,26 @@
+pkgbase = carla-bridges
+	pkgver = 2.6.0.git20251111
+	pkgrel = 1
+	url = https://kx.studio/Applications:Carla
+	arch = i686
+	arch = x86_64
+	groups = clap-plugins
+	groups = lv2-plugins
+	groups = pro-audio
+	groups = vst-plugins
+	groups = vst3-plugins
+	license = GPL-2.0-or-later
+	depends = carla
+	depends = wine
+	source = https://launchpad.net/~kxstudio-debian/+archive/apps/+files/carla-bridge-win32_2.6.0~git20251111-1kxstudio1_amd64.deb
+	source = https://launchpad.net/~kxstudio-debian/+archive/apps/+files/carla-bridge-win64_2.6.0~git20251111-1kxstudio1_amd64.deb
+	source = https://launchpad.net/~kxstudio-debian/+archive/apps/+files/carla-vst-wine_2.6.0~git20251111-1kxstudio1_amd64.deb
+	sha256sums = 892efeb72ed437aed64cfdd56fc5664f4f9d2dc358e268057b79c7154baa69cf
+	sha256sums = c56f84d39df0b53dc50ca196d788c44f4fe9c9e3f858905d47df2132645921cb
+	sha256sums = fc1e456912ef1a74523282339ecc6e43edf1d1e09d83034cfd08daf820ebe4a3
+
+pkgname = carla-bridges-win32-bin
+	pkgdesc = Carla Windows bridges (32-bit)
+
+pkgname = carla-bridges-win64-bin
+	pkgdesc = Carla Windows bridges (64-bit)
