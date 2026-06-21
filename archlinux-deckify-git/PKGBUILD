@@ -3,7 +3,7 @@
 
 pkgname=archlinux-deckify-git
 _pkgname=ArchLinuxDeckify
-pkgver=r81.4345a8e
+pkgver=r82.92764bb
 pkgrel=1
 pkgdesc="Modular SteamOS-like session for Arch with centralized configuration and profile templates"
 arch=('any')
@@ -60,12 +60,6 @@ package() {
 
   # Install the .profile template
   install -Dm644 .bash_profile "$pkgdir/opt/steamos-session/config/.bash_profile"
-
-  # Install SteamOS games session launcher
-  install -Dm644 "SteamOS (Gaming Mode).desktop" "$pkgdir/usr/share/applications/SteamOS (Gaming Mode).desktop"
-
-  # Install SteamOS Icon
-  install -Dm644 distributor-logo-steamdeck.svg "$pkgdir/usr/share/icons/distributor-logo-steamdeck.svg"
 
   # Create symlink
   ln -s /opt/steamos-session/steamos-gamemode-enhanced "$pkgdir/usr/bin/steamos-gamemode-enhanced"
