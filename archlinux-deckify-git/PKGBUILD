@@ -81,12 +81,6 @@ package() {
 
 # SteamOS TTY Handoff
 %wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/steamos-session-switcher
-
-# Restart getty@tty1 service
-%wheel ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart getty@tty1.service
-
-# Change Virtual Terminal (All Arguments)
-%wheel ALL=(ALL) NOPASSWD: /usr/bin/openvt *
 EOF
   chmod 440 "$pkgdir/etc/sudoers.d/steamos-session-overrides"
 
