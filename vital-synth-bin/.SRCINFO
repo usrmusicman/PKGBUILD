@@ -1,6 +1,6 @@
 pkgbase = vital-synth-bin
-	pkgver = 1.5.5
-	pkgrel = 4
+	pkgver = 1.6.4
+	pkgrel = 1
 	url = https://vital.audio
 	arch = x86_64
 	license = custom

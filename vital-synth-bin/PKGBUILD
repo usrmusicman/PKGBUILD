@@ -1,7 +1,7 @@
 pkgbase=vital-synth-bin
 pkgname=("${pkgbase/-bin/}-standalone-bin" "${pkgbase/-bin/}-clap-bin" "${pkgbase/-bin/}-vst-bin" "${pkgbase/-bin/}-vst3-bin")
-pkgver=1.5.5
-pkgrel=4
+pkgver=1.6.4
+pkgrel=1
 arch=('x86_64')
 url="https://vital.audio"
 license=('custom')
