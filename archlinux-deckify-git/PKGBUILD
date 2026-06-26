@@ -3,7 +3,7 @@
 
 pkgname=archlinux-deckify-git
 _pkgname=ArchLinuxDeckify
-pkgver=r82.92764bb
+pkgver=r84.ee9f153
 pkgrel=1
 pkgdesc="Modular SteamOS-like session for Arch with centralized configuration and profile templates"
 arch=('any')
@@ -52,16 +52,19 @@ package() {
   chmod 750 "$pkgdir/etc/sudoers.d"
 
   # Install scripts, config, and the new profile template
+  install -Dm755 steamos-deckify-toggle "$pkgdir/opt/steamos-session/steamos-deckify-toggle"
   install -Dm755 steamos-gamemode-enhanced "$pkgdir/opt/steamos-session/steamos-gamemode-enhanced"
   install -Dm755 steamos-session-launcher "$pkgdir/opt/steamos-session/steamos-session-launcher"
   install -Dm755 steamos-session-select "$pkgdir/opt/steamos-session/steamos-session-select"
   install -Dm755 steamos-session-switcher "$pkgdir/opt/steamos-session/steamos-session-switcher"
   install -Dm644 steamos-session-config "$pkgdir/opt/steamos-session/config/steamos-session-config"
 
-  # Install the .profile template
-  install -Dm644 .bash_profile "$pkgdir/opt/steamos-session/config/.bash_profile"
+  # Install the .profile templates
+  install -Dm644 .bash_profile.deckify "$pkgdir/opt/steamos-session/config/.bash_profile.deckify"
+  install -Dm644 .bash_profile.normal "$pkgdir/opt/steamos-session/config/.bash_profile.normal"
 
   # Create symlink
+  ln -s /opt/steamos-session/steamos-deckify-toggle "$pkgdir/usr/bin/steamos-deckify-toggle"
   ln -s /opt/steamos-session/steamos-gamemode-enhanced "$pkgdir/usr/bin/steamos-gamemode-enhanced"
   ln -s /opt/steamos-session/steamos-session-launcher "$pkgdir/usr/bin/steamos-session-launcher"
   ln -s /opt/steamos-session/steamos-session-select "$pkgdir/usr/bin/steamos-session-select"
