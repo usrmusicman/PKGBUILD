@@ -3,7 +3,7 @@
 
 pkgname=archlinux-deckify-git
 _pkgname=ArchLinuxDeckify
-pkgver=r90.9f21669
+pkgver=r91.0dd11d8
 pkgrel=1
 pkgdesc="Modular SteamOS-like session for Arch with centralized configuration and profile templates"
 arch=('any')
