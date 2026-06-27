@@ -3,7 +3,7 @@
 
 pkgname=archlinux-deckify-git
 _pkgname=ArchLinuxDeckify
-pkgver=r92.f322557
+pkgver=r93.692a41b
 pkgrel=1
 pkgdesc="Modular SteamOS-like session for Arch with centralized configuration and profile templates"
 arch=('any')
@@ -56,7 +56,6 @@ package() {
   install -Dm755 steamos-gamemode-enhanced "$pkgdir/opt/steamos-session/steamos-gamemode-enhanced"
   install -Dm755 steamos-session-launcher "$pkgdir/opt/steamos-session/steamos-session-launcher"
   install -Dm755 steamos-session-select "$pkgdir/opt/steamos-session/steamos-session-select"
-  install -Dm755 steamos-session-switcher "$pkgdir/opt/steamos-session/steamos-session-switcher"
   install -Dm644 steamos-session-config "$pkgdir/opt/steamos-session/config/steamos-session-config"
 
   # Install the .profile templates
@@ -68,7 +67,6 @@ package() {
   ln -s /opt/steamos-session/steamos-gamemode-enhanced "$pkgdir/usr/bin/steamos-gamemode-enhanced"
   ln -s /opt/steamos-session/steamos-session-launcher "$pkgdir/usr/bin/steamos-session-launcher"
   ln -s /opt/steamos-session/steamos-session-select "$pkgdir/usr/bin/steamos-session-select"
-  ln -s /opt/steamos-session/steamos-session-switcher "$pkgdir/usr/bin/steamos-session-switcher"
 
   # Install Sudoers Override
   cat <<EOF > "$pkgdir/etc/sudoers.d/steamos-session-overrides"
