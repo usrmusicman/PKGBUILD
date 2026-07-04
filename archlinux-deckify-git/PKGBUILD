@@ -68,20 +68,6 @@ package() {
   ln -s /opt/steamos-session/steamos-session-launcher "$pkgdir/usr/bin/steamos-session-launcher"
   ln -s /opt/steamos-session/steamos-session-select "$pkgdir/usr/bin/steamos-session-select"
 
-  # Install Sudoers Override
-  cat <<EOF > "$pkgdir/etc/sudoers.d/steamos-session-overrides"
-# Nvidia specific power limits changes
-%wheel ALL=(ALL) NOPASSWD: /usr/bin/nvidia-smi
-%wheel ALL=(ALL) NOPASSWD: /usr/bin/nvidia-settings
-
-# SteamOS Enhanced Gamemode
-%wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/steamos-gamemode-enhanced
-
-# SteamOS TTY Handoff
-%wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/steamos-session-switcher
-EOF
-  chmod 440 "$pkgdir/etc/sudoers.d/steamos-session-overrides"
-
   # 5. Install Getty Override Template
   cat <<EOF > "$pkgdir/etc/systemd/system/getty@tty1.service.d/override.conf"
 [Service]
