@@ -3,7 +3,7 @@
 
 pkgname=archlinux-deckify-git
 _pkgname=ArchLinuxDeckify
-pkgver=r95.96ad825
+pkgver=r96.afb7cc2
 pkgrel=1
 pkgdesc="Modular SteamOS-like session for Arch with centralized configuration and profile templates"
 arch=('any')
@@ -44,12 +44,8 @@ package() {
 
   # Create Directories
   mkdir -p "$pkgdir/etc/systemd/system/getty@tty1.service.d"
-  mkdir -p "$pkgdir/etc/sudoers.d"
   mkdir -p "$pkgdir/etc/sysctl.d"
   mkdir -p "$pkgdir/usr/bin"
-
-  # Change directory permissions
-  chmod 750 "$pkgdir/etc/sudoers.d"
 
   # Install scripts, config, and the new profile template
   install -Dm755 steamos-deckify-toggle "$pkgdir/opt/steamos-session/steamos-deckify-toggle"

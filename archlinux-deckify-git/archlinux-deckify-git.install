@@ -5,7 +5,7 @@ post_install() {
   echo "==> Configuring autologin for user: $REAL_USER"
   sed -i "s/@USER@/$REAL_USER/g" /etc/systemd/system/getty@tty1.service.d/override.conf
 
-  echo "==> Reloading systemd and enabling getty@tty6"
+  echo "==> Reloading systemd and enabling getty@tty1"
   systemctl daemon-reload
   systemctl enable getty@tty1.service
 
