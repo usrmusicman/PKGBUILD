@@ -3,13 +3,13 @@
 
 pkgname=archlinux-deckify-git
 _pkgname=ArchLinuxDeckify
-pkgver=r96.afb7cc2
+pkgver=r99.2b3b5ab
 pkgrel=1
 pkgdesc="Modular SteamOS-like session for Arch with centralized configuration and profile templates"
 arch=('any')
 url="https://github.com/usrmusicman/ArchLinuxDeckify"
 license=('GPL')
-depends=('gamemode' 'gamescope' 'steam' 'steam-devices' 'bash' 'realtime-privileges' 'sudo' 'scx-scheds' 'scx-tools' 'pipewire' 'iw' 'udiskie')
+depends=('catimg' 'gamemode' 'gamescope' 'steam' 'steam-devices' 'bash' 'realtime-privileges' 'sudo' 'scx-scheds' 'scx-tools' 'pipewire' 'iw' 'udiskie')
 
 optdepends=(
   'nvidia-utils: For Nvidia GPU support'
@@ -47,16 +47,19 @@ package() {
   mkdir -p "$pkgdir/etc/sysctl.d"
   mkdir -p "$pkgdir/usr/bin"
 
-  # Install scripts, config, and the new profile template
+  # Install scripts, and hardware startup configs
   install -Dm755 steamos-deckify-toggle "$pkgdir/opt/steamos-session/steamos-deckify-toggle"
   install -Dm755 steamos-gamemode-enhanced "$pkgdir/opt/steamos-session/steamos-gamemode-enhanced"
   install -Dm755 steamos-session-launcher "$pkgdir/opt/steamos-session/steamos-session-launcher"
   install -Dm755 steamos-session-select "$pkgdir/opt/steamos-session/steamos-session-select"
-  install -Dm644 steamos-session-config "$pkgdir/opt/steamos-session/config/steamos-session-config"
+  install -Dm644 config/session/default/steamos-session-config "$pkgdir/opt/steamos-session/config/session/default/steamos-session-config"
 
-  # Install the .profile templates
-  install -Dm644 .bash_profile.deckify "$pkgdir/opt/steamos-session/config/.bash_profile.deckify"
-  install -Dm644 .bash_profile.normal "$pkgdir/opt/steamos-session/config/.bash_profile.normal"
+  # Install the bash .profile templates
+  install -Dm644 config/bash/.bash_profile.deckify "$pkgdir/opt/steamos-session/config/bash/.bash_profile.deckify"
+  install -Dm644 config/bash/.bash_profile.normal "$pkgdir/opt/steamos-session/config/bash/.bash_profile.normal"
+
+  # Install the associated assets
+  install -Dm644 assets/icons/steamos-session-icon.png "$pkgdir/opt/steamos-session/assets/icons/steamos-session-icon.png"
 
   # Create symlink
   ln -s /opt/steamos-session/steamos-deckify-toggle "$pkgdir/usr/bin/steamos-deckify-toggle"
