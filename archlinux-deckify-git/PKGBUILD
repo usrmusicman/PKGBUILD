@@ -1,65 +1,69 @@
 # Maintainer: Your Name <your@email.com>
 # Sysctl Tweaks
 
-pkgname=archlinux-deckify-git
+pkgbase=archlinux-deckify
+pkgname=("${pkgbase}-git" "${pkgbase}-database-git")
 _pkgname=ArchLinuxDeckify
-pkgver=r100.48d7150
+pkgver=r104.652752c
 pkgrel=1
-pkgdesc="Modular SteamOS-like session for Arch with centralized configuration and profile templates"
 arch=('any')
 url="https://github.com/usrmusicman/ArchLinuxDeckify"
 license=('GPL')
-depends=('catimg' 'gamemode' 'gamescope' 'steam' 'steam-devices' 'bash' 'realtime-privileges' 'sudo' 'scx-scheds' 'scx-tools' 'pipewire' 'iw' 'udiskie')
-
-optdepends=(
-  'nvidia-utils: For Nvidia GPU support'
-  'gdm: For automatic login support'
-  'lightdm: For automatic login support'
-  'lib32-gamemode: For regular gamemode 32-bit support'
-  'lib32-nvidia-utils: For Nvidia 32-bit gaming'
-  'lib32-vulkan-radeon: For AMD Vulkan 32-bit support'
-  'lib32-vulkan-intel: For Intel GPU 32-bit support'
-  'pipewire-control-gui: For the Audio Session Control'
-  'plasma-login-manager: For automatic login support'
-  'sddm: For automatic login support'
-  'xf86-video-amdgpu: For AMD GPU support'
-  'vulkan-radeon: For AMD Vulkan support'
-  'vulkan-intel: For Intel GPU support'
-)
-
 makedepends=('git')
-provides=("${pkgname%-git}")
-conflicts=("${pkgname%-git}")
 source=("git+${url}.git")
 sha256sums=('SKIP')
-install="${pkgname}.install"
 
 pkgver() {
   cd "$_pkgname"
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
-package() {
+package_archlinux-deckify-git() {
+  depends=('catimg' 'gamemode' 'gamescope' 'steam' 'steam-devices' 'bash' 'realtime-privileges' 'sudo' 'scx-scheds' 'scx-tools' 'pipewire' 'iw' 'udiskie')
+  pkgdesc="Modular SteamOS-like session for Arch with centralized configuration and profile templates"
+  provides=("$pkgbase-git")
+  conflicts=("$pkgbase-git")
+  install="$pkgbase-git.install"
+
+  optdepends=(
+    'nvidia-utils: For Nvidia GPU support'
+    'gdm: For automatic login support'
+    'lightdm: For automatic login support'
+    'lib32-gamemode: For regular gamemode 32-bit support'
+    'lib32-nvidia-utils: For Nvidia 32-bit gaming'
+    'lib32-vulkan-radeon: For AMD Vulkan 32-bit support'
+    'lib32-vulkan-intel: For Intel GPU 32-bit support'
+    'pipewire-control-gui: For the Audio Session Control'
+    'plasma-login-manager: For automatic login support'
+    'sddm: For automatic login support'
+    'xf86-video-amdgpu: For AMD GPU support'
+    'vulkan-radeon: For AMD Vulkan support'
+    'vulkan-intel: For Intel GPU support'
+  )
+
   cd "$_pkgname"
 
   # Create Directories
   mkdir -p "$pkgdir/etc/systemd/system/getty@tty1.service.d"
+  mkdir -p "$pkgdir/etc/sudoers.d"
   mkdir -p "$pkgdir/etc/sysctl.d"
   mkdir -p "$pkgdir/usr/bin"
 
   # Install scripts, and hardware startup configs
-  install -Dm755 steamos-deckify-toggle "$pkgdir/opt/steamos-session/steamos-deckify-toggle"
-  install -Dm755 steamos-gamemode-enhanced "$pkgdir/opt/steamos-session/steamos-gamemode-enhanced"
-  install -Dm755 steamos-session-launcher "$pkgdir/opt/steamos-session/steamos-session-launcher"
-  install -Dm755 steamos-session-select "$pkgdir/opt/steamos-session/steamos-session-select"
-  install -Dm644 config/session/default/steamos-session-config "$pkgdir/opt/steamos-session/config/session/default/steamos-session-config"
+  install -Dm755 $srcdir/ArchLinuxDeckify/steamos-deckify-toggle "$pkgdir/opt/steamos-session/steamos-deckify-toggle"
+  install -Dm755 $srcdir/ArchLinuxDeckify/steamos-gamemode-enhanced "$pkgdir/opt/steamos-session/steamos-gamemode-enhanced"
+  install -Dm755 $srcdir/ArchLinuxDeckify/steamos-session-launcher "$pkgdir/opt/steamos-session/steamos-session-launcher"
+  install -Dm755 $srcdir/ArchLinuxDeckify/steamos-session-select "$pkgdir/opt/steamos-session/steamos-session-select"
+  install -Dm755 $srcdir/ArchLinuxDeckify/config/session/hardware/default/1080p-60 "$pkgdir/opt/steamos-session/config/session/hardware/default/1080p-60"
+  install -Dm755 $srcdir/ArchLinuxDeckify/config/session/hardware/default/1440p-60 "$pkgdir/opt/steamos-session/config/session/hardware/default/1440p-60"
+  install -Dm755 $srcdir/ArchLinuxDeckify/config/session/hardware/default/2160p-60 "$pkgdir/opt/steamos-session/config/session/hardware/default/2160p-60"
 
   # Install the bash .profile templates
-  install -Dm644 config/bash/.bash_profile.deckify "$pkgdir/opt/steamos-session/config/bash/.bash_profile.deckify"
-  install -Dm644 config/bash/.bash_profile.normal "$pkgdir/opt/steamos-session/config/bash/.bash_profile.normal"
+  install -Dm644 $srcdir/ArchLinuxDeckify/config/bash/.bash_profile.deckify "$pkgdir/opt/steamos-session/config/bash/.bash_profile.deckify"
+  install -Dm644 $srcdir/ArchLinuxDeckify/config/bash/.bash_profile.normal "$pkgdir/opt/steamos-session/config/bash/.bash_profile.normal"
 
   # Install the associated assets
-  install -Dm644 assets/icons/steamos-session-icon.png "$pkgdir/opt/steamos-session/assets/icons/steamos-session-icon.png"
+  install -Dm644 $srcdir/ArchLinuxDeckify/assets/icons/steamos-session-icon.png "$pkgdir/opt/steamos-session/assets/icons/steamos-session-icon.png"
 
   # Create symlink
   ln -s /opt/steamos-session/steamos-deckify-toggle "$pkgdir/usr/bin/steamos-deckify-toggle"
@@ -67,14 +71,22 @@ package() {
   ln -s /opt/steamos-session/steamos-session-launcher "$pkgdir/usr/bin/steamos-session-launcher"
   ln -s /opt/steamos-session/steamos-session-select "$pkgdir/usr/bin/steamos-session-select"
 
-  # 5. Install Getty Override Template
+  # 5. Install sudoers override file
+  cat <<EOF > "$pkgdir/etc/sudoers.d/10-steamos-session-overrides"
+# SteamOS Enhanced Gamemode
+%wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/steamos-gamemode-enhanced
+EOF
+
+chmod 440 $pkgdir/etc/sudoers.d/10-steamos-session-overrides
+
+  # 6. Install Getty Override Template
   cat <<EOF > "$pkgdir/etc/systemd/system/getty@tty1.service.d/override.conf"
 [Service]
 ExecStart=
 ExecStart=-/sbin/agetty --autologin @USER@ --noclear %I 38400 linux
 EOF
 
-   # 6. Sysctl Tweaks
+   # 7. Sysctl Tweaks
    cat <<EOF > "$pkgdir/etc/sysctl.d/10-memory.conf"
 # Lower swappiness to favor RAM for your creative apps
 vm.swappiness = 1
@@ -108,7 +120,7 @@ vm.stat_interval = 10
 kernel.timer_migration = 0
 EOF
 
-  # 7. Install Pacman Hook for Gamescope Capabilities
+  # 8. Install Pacman Hook for Gamescope Capabilities
   mkdir -p "$pkgdir/usr/share/libalpm/hooks"
   cat <<EOF > "$pkgdir/usr/share/libalpm/hooks/gamescope-capabilities.hook"
 [Trigger]
@@ -122,4 +134,20 @@ Description = Restoring setcap 'cap_sys_nice=eip' to gamescope...
 When = PostTransaction
 Exec = /usr/bin/setcap 'cap_sys_nice=eip' /usr/bin/gamescope
 EOF
+}
+
+package_archlinux-deckify-database-git() {
+  depends=("archlinux-deckify-git")
+  pkgdesc="Modular SteamOS-like session for Arch (Profile Database)"
+  provides=("$pkgbase-database-git")
+  conflicts=("$pkgbase-database-git")
+
+  mkdir -p $pkgdir/opt/steamos-session/config/session/hardware
+  cp -rvf $srcdir/ArchLinuxDeckify/config/session/hardware/amdgpu-sapphire-rx9070xt $pkgdir/opt/steamos-session/config/session/hardware
+  cp -rvf $srcdir/ArchLinuxDeckify/config/session/hardware/amdgpu-valve-steamdeck $pkgdir/opt/steamos-session/config/session/hardware
+  cp -rvf $srcdir/ArchLinuxDeckify/config/session/hardware/nvidia-acer-nitrov15 $pkgdir/opt/steamos-session/config/session/hardware
+  cp -rvf $srcdir/ArchLinuxDeckify/config/session/hardware/nvidia-fe-rtx2080ti $pkgdir/opt/steamos-session/config/session/hardware
+  cp -rvf $srcdir/ArchLinuxDeckify/config/session/hardware/nvidia-pny-rtx4080super $pkgdir/opt/steamos-session/config/session/hardware
+  cp -rvf $srcdir/ArchLinuxDeckify/config/session/hardware/xe-asrock-b580 $pkgdir/opt/steamos-session/config/session/hardware
+  cp -rvf $srcdir/ArchLinuxDeckify/config/session/hardware/xe-le-a770 $pkgdir/opt/steamos-session/config/session/hardware
 }
