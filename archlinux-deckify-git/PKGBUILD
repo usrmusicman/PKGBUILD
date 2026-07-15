@@ -4,7 +4,7 @@
 pkgbase=archlinux-deckify
 pkgname=("${pkgbase}-git" "${pkgbase}-database-git")
 _pkgname=ArchLinuxDeckify
-pkgver=r104.652752c
+pkgver=r108.f4d1294
 pkgrel=1
 arch=('any')
 url="https://github.com/usrmusicman/ArchLinuxDeckify"
@@ -26,6 +26,8 @@ package_archlinux-deckify-git() {
   install="$pkgbase-git.install"
 
   optdepends=(
+    'kdialog: For the QT file selection dialog'
+    'zenity: For the GTK file selection dialog'
     'nvidia-utils: For Nvidia GPU support'
     'gdm: For automatic login support'
     'lightdm: For automatic login support'
@@ -33,7 +35,6 @@ package_archlinux-deckify-git() {
     'lib32-nvidia-utils: For Nvidia 32-bit gaming'
     'lib32-vulkan-radeon: For AMD Vulkan 32-bit support'
     'lib32-vulkan-intel: For Intel GPU 32-bit support'
-    'pipewire-control-gui: For the Audio Session Control'
     'plasma-login-manager: For automatic login support'
     'sddm: For automatic login support'
     'xf86-video-amdgpu: For AMD GPU support'
@@ -44,9 +45,14 @@ package_archlinux-deckify-git() {
   cd "$_pkgname"
 
   # Create Directories
+  mkdir -p "$pkgdir/etc/mkinitcpio.conf.d"
+  mkdir -p "$pkgdir/etc/modprobe.d"
+  mkdir -p "$pkgdir/etc/modules-load.d"
   mkdir -p "$pkgdir/etc/systemd/system/getty@tty1.service.d"
+  mkdir -p "$pkgdir/usr/share/libalpm/hooks"
   mkdir -p "$pkgdir/etc/sudoers.d"
   mkdir -p "$pkgdir/etc/sysctl.d"
+  mkdir -p "$pkgdir/etc/udev/rules.d"
   mkdir -p "$pkgdir/usr/bin"
 
   # Install scripts, and hardware startup configs
@@ -71,7 +77,7 @@ package_archlinux-deckify-git() {
   ln -s /opt/steamos-session/steamos-session-launcher "$pkgdir/usr/bin/steamos-session-launcher"
   ln -s /opt/steamos-session/steamos-session-select "$pkgdir/usr/bin/steamos-session-select"
 
-  # 5. Install sudoers override file
+  # Install sudoers override file
   cat <<EOF > "$pkgdir/etc/sudoers.d/10-steamos-session-overrides"
 # SteamOS Enhanced Gamemode
 %wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/steamos-gamemode-enhanced
@@ -79,49 +85,14 @@ EOF
 
 chmod 440 $pkgdir/etc/sudoers.d/10-steamos-session-overrides
 
-  # 6. Install Getty Override Template
+  # Install Getty Override Template
   cat <<EOF > "$pkgdir/etc/systemd/system/getty@tty1.service.d/override.conf"
 [Service]
 ExecStart=
 ExecStart=-/sbin/agetty --autologin @USER@ --noclear %I 38400 linux
 EOF
 
-   # 7. Sysctl Tweaks
-   cat <<EOF > "$pkgdir/etc/sysctl.d/10-memory.conf"
-# Lower swappiness to favor RAM for your creative apps
-vm.swappiness = 1
-# Reluctantly reclaim file system caches for snappier navigation
-vm.vfs_cache_pressure = 50
-EOF
-
-   cat <<EOF > "$pkgdir/etc/sysctl.d/20-responsiveness.conf"
-# Allow more memory maps (Critical for heavy Steam games and Wine)
-vm.max_map_count = 1048576
-EOF
-
-   cat <<EOF > "$pkgdir/etc/sysctl.d/30-network.conf"
-# Increases the maximum number of packets queued on the input side.
-net.core.netdev_max_backlog = 5000
-# Reduces the handshake overhead for connections.
-net.ipv4.tcp_fastopen = 3
-EOF
-
-   cat <<EOF > "$pkgdir/etc/sysctl.d/40-rt_preempt.conf"
-# Give RT threads 100% of CPU time
-kernel.sched_rt_runtime_us = -1
-# NUMA Balancing
-kernel.numa_balancing = 0
-EOF
-
-   cat <<EOF > "$pkgdir/etc/sysctl.d/50-timers.conf"
-# Increases the interval (in seconds) at which the kernel gathers VM statistics.
-vm.stat_interval = 10
-# On multi-core systems, the kernel tries to move timers to idle CPUs to save power.
-kernel.timer_migration = 0
-EOF
-
-  # 8. Install Pacman Hook for Gamescope Capabilities
-  mkdir -p "$pkgdir/usr/share/libalpm/hooks"
+  # Install Pacman Hook for Gamescope Capabilities
   cat <<EOF > "$pkgdir/usr/share/libalpm/hooks/gamescope-capabilities.hook"
 [Trigger]
 Operation = Install
@@ -133,6 +104,48 @@ Target = gamescope
 Description = Restoring setcap 'cap_sys_nice=eip' to gamescope...
 When = PostTransaction
 Exec = /usr/bin/setcap 'cap_sys_nice=eip' /usr/bin/gamescope
+EOF
+
+  # I/O Schedulers
+  cat <<EOF > "$pkgdir/etc/udev/rules.d/60-ioschedulers.rules"
+# Set BFQ for rotational drives (HDDs)
+ACTION=="add|change", KERNEL=="sd[a-z]*|mmcblk[0-9]*", ATTR{queue/rotational}=="1", ATTR{queue/scheduler}="bfq"
+
+# Set 'none' for non-rotational NVMe drives
+ACTION=="add|change", KERNEL=="nvme[0-9]*n[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="none"
+
+# Set 'none' for non-rotational SATA SSDs
+ACTION=="add|change", KERNEL=="sd[a-z]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="none"
+EOF
+
+  # Create the ntsync module load file to ensure it starts at boot
+  cat <<EOF > "$pkgdir/etc/modules-load.d/ntsync.conf"
+ntsync
+EOF
+
+  # Create a udev rule to allow the user to access /dev/ntsync
+  cat <<EOF > "$pkgdir/etc/udev/rules.d/99-ntsync.rules"
+KERNEL=="ntsync", MODE="0666"
+EOF
+
+  # Uinput alias modprobe
+  cat <<EOF > "$pkgdir/etc/modprobe.d/10-uinput.conf"
+alias char-major-10-223 uinput
+EOF
+
+  # Performance & Filesystem Modules
+  cat <<EOF > "$pkgdir/etc/mkinitcpio.conf.d/10-performance.conf"
+MODULES+=(ntsync ext4 nls_ascii nls_utf8)
+EOF
+
+  # Force uinput module to load at boot
+  cat <<EOF > "$pkgdir/etc/modules-load.d/uinput.conf"
+uinput
+EOF
+
+  # Udev rule to allow the 'input' group to use it (Crucial for Steam/Controllers)
+  cat <<EOF > "$pkgdir/etc/udev/rules.d/99-uinput.rules"
+KERNEL=="uinput", GROUP="input", MODE="0660", OPTIONS+="static_node=uinput"
 EOF
 }
 
