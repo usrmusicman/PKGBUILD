@@ -19,7 +19,7 @@ pkgver() {
 }
 
 package_archlinux-deckify-git() {
-  depends=('catimg' 'gamemode' 'gamescope' 'steam' 'steam-devices' 'bash' 'realtime-privileges' 'sudo' 'scx-scheds' 'scx-tools' 'pipewire' 'iw' 'udiskie')
+  depends=('catimg' 'gamemode' 'gamescope' 'steam' 'steam-devices' 'bash' 'realtime-privileges' 'sudo' 'scx-scheds' 'scx-tools' 'pipewire' 'power-profiles-daemon' 'iw' 'udiskie')
   pkgdesc="Modular SteamOS-like session for Arch with centralized configuration and profile templates"
   provides=("$pkgbase-git")
   conflicts=("$pkgbase-git")
@@ -31,6 +31,7 @@ package_archlinux-deckify-git() {
     'nvidia-utils: For Nvidia GPU support'
     'gdm: For automatic login support'
     'lightdm: For automatic login support'
+    'gamemode: For regular gamemode support'
     'lib32-gamemode: For regular gamemode 32-bit support'
     'lib32-nvidia-utils: For Nvidia 32-bit gaming'
     'lib32-vulkan-radeon: For AMD Vulkan 32-bit support'
