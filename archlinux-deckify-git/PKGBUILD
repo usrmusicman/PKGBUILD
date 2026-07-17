@@ -4,7 +4,7 @@
 pkgbase=archlinux-deckify
 pkgname=("${pkgbase}-git" "${pkgbase}-database-git")
 _pkgname=ArchLinuxDeckify
-pkgver=r108.f4d1294
+pkgver=r110.f770b3c
 pkgrel=1
 arch=('any')
 url="https://github.com/usrmusicman/ArchLinuxDeckify"
@@ -83,6 +83,7 @@ package_archlinux-deckify-git() {
 %wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/steamos-gamemode-enhanced
 EOF
 
+chmod 750 $pkgdir/etc/sudoers.d
 chmod 440 $pkgdir/etc/sudoers.d/10-steamos-session-overrides
 
   # Install Getty Override Template
