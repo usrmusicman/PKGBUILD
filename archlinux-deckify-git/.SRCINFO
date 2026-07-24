@@ -1,5 +1,5 @@
 pkgbase = archlinux-deckify
-	pkgver = r116.fa2733a
+	pkgver = r117.89ed8c8
 	pkgrel = 1
 	url = https://github.com/usrmusicman/ArchLinuxDeckify
 	arch = any
