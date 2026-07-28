@@ -1,5 +1,5 @@
 pkgbase = archlinux-deckify
-	pkgver = r121.7d27fe5
+	pkgver = r123.bb0f252
 	pkgrel = 1
 	url = https://github.com/usrmusicman/ArchLinuxDeckify
 	arch = any
@@ -22,7 +22,6 @@ pkgname = archlinux-deckify-git
 	depends = scx-scheds
 	depends = scx-tools
 	depends = pipewire
-	depends = power-profiles-daemon
 	depends = iw
 	depends = udiskie
 	optdepends = kdialog: For the QT file selection dialog

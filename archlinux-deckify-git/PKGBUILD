@@ -4,7 +4,7 @@
 pkgbase=archlinux-deckify
 pkgname=("${pkgbase}-git" "${pkgbase}-database-git")
 _pkgname=ArchLinuxDeckify
-pkgver=r121.7d27fe5
+pkgver=r123.bb0f252
 pkgrel=1
 arch=('any')
 url="https://github.com/usrmusicman/ArchLinuxDeckify"
@@ -19,7 +19,7 @@ pkgver() {
 }
 
 package_archlinux-deckify-git() {
-  depends=('catimg' 'gamemode' 'gamescope' 'steam' 'steam-devices' 'bash' 'realtime-privileges' 'sudo' 'scx-scheds' 'scx-tools' 'pipewire' 'power-profiles-daemon' 'iw' 'udiskie')
+  depends=('catimg' 'gamemode' 'gamescope' 'steam' 'steam-devices' 'bash' 'realtime-privileges' 'sudo' 'scx-scheds' 'scx-tools' 'pipewire' 'iw' 'udiskie')
   pkgdesc="Modular SteamOS-like session for Arch with centralized configuration and profile templates"
   provides=("$pkgbase-git")
   conflicts=("$pkgbase-git")
