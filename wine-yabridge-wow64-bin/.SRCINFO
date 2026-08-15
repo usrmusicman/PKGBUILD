@@ -1,6 +1,6 @@
 pkgbase = wine-yabridge-wow64-bin
 	pkgdesc = A compatibility layer for running Windows programs (WOW64 with TkG-Staging patches)
-	pkgver = 11.9
+	pkgver = 11.15
 	pkgrel = 1
 	url = https://github.com/Kron4ek/Wine-Builds
 	arch = x86_64
@@ -27,11 +27,11 @@ pkgbase = wine-yabridge-wow64-bin
 	depends = wayland
 	depends = desktop-file-utils
 	depends = libgphoto2
-	provides = wine=11.9
-	provides = wine-staging=11.9
-	provides = wine-wow64=11.9
+	provides = wine=11.15
+	provides = wine-staging=11.15
+	provides = wine-wow64=11.15
 	conflicts = wine
-	source = https://github.com/Kron4ek/Wine-Builds/releases/download/11.9/wine-11.9-staging-tkg-amd64-wow64.tar.xz
-	sha256sums = df996366429d7a3329543b3abd27083d2c64adbb3cb915b9d4b3db86a1a322fd
+	source = https://github.com/Kron4ek/Wine-Builds/releases/download/11.15/wine-11.15-staging-tkg-amd64-wow64.tar.xz
+	sha256sums = efa9f602507dc1c1296c2415c19c1e76bc1780052ccc5197a7abb28ff31784d4
 
 pkgname = wine-yabridge-wow64-bin

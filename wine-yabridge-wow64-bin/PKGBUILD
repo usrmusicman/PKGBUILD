@@ -1,5 +1,5 @@
 pkgname="wine-yabridge-wow64-bin"
-pkgver=11.11
+pkgver=11.15
 pkgrel=1
 pkgdesc="A compatibility layer for running Windows programs (WOW64 with TkG-Staging patches)"
 url="https://github.com/Kron4ek/Wine-Builds"
@@ -13,7 +13,7 @@ provides=(
 )
 conflicts=("wine")
 source=("https://github.com/Kron4ek/Wine-Builds/releases/download/${pkgver}/wine-${pkgver}-staging-tkg-amd64-wow64.tar.xz")
-sha256sums=('44f5330be22424c51d2b48ddc60dc4e1fca686628cedd9e76cd2b041a4aeb3d9')
+sha256sums=('efa9f602507dc1c1296c2415c19c1e76bc1780052ccc5197a7abb28ff31784d4')
 
 package() {
 

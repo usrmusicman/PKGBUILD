@@ -1,5 +1,5 @@
 pkgbase = amp-locker
-	pkgver = 1.5.3
+	pkgver = 1.5.4
 	pkgrel = 1
 	url = https://audioassault.mx/amplocker
 	arch = x86_64
@@ -40,7 +40,7 @@ pkgbase = amp-locker
 	sha256sums = 22d4bb55ba738634ab5cb0cc768db092d158b642dbdb790ee01ae82088ef4821
 	sha256sums = 7784d4c4cf7bd953b52c34268cfd92dae1e23028e15c77b8e9e3ebd4970d0e80
 	sha256sums = 2ccb54d693ba09c2f86750891f2d1ea090f74fe282c3268617d1519b58f79ad5
-	sha256sums = d7915d026fff28f0bb35d4abca15babdf84188796649a6869ca16cf8d6ef6ea8
+	sha256sums = 7e4955beeac9a0ded3ce1c1102792d266d366cc6ca9a77a5ea148863740b4713
 
 pkgname = amp-locker-data-bin
 	pkgdesc = Audio Assault Multiamp Simulator (Data Assets)
