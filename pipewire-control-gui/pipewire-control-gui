@@ -1,90 +1,121 @@
-#!/bin/sh
+#!/bin/bash
 
-# Dependencies: pipewire-jack, kdialog/zenity (optional)
+# Initialize variables
+QUANTUM=""
+SAMPLERATE=""
+APP_PATH=""
 
-# ------------------------------------------------------------------------------
-# 1. CLI SWITCH PARSING
-# ------------------------------------------------------------------------------
-while [ "$#" -gt 0 ]; do
-    case "$1" in
-        -q) AUDIO_BUFFER="$2"; shift 2 ;;
-        -r) AUDIO_SAMPLE_RATE="$2"; shift 2 ;;
-        -l) APP_PATH="$2"; shift 2 ;;
-        -h|--help)
-            echo "Usage: sudo $0 [OPTIONS]"
-            echo "  -q <quantum>    Buffer size (16-8192)"
-            echo "  -r <rate>       Sample rate (44100-192000)"
-            echo "  -l <cmd>        Path to application executable"
-            echo "  -h <help>       Show this help message"
-            exit 0 ;;
-        *) echo "Unknown option: $1"; exit 1 ;;
-    esac
-done
+# Set BINARY_PATH with a default fallback to /usr/bin if not already set
+BINARY_PATH="${BINARY_PATH:-/usr/bin}"
 
-# ------------------------------------------------------------------------------
-# 2. VALIDATION & GUI/CLI FALLBACKS
-# ------------------------------------------------------------------------------
-validate_input() {
-    val=$1; min=$2; max=$3
-    if [[ "$val" =~ ^[0-9]+$ ]] && [ "$val" -ge "$min" ] && [ "$val" -le "$max" ]; then
-        return 0
-    fi
-    return 1
+# Help dialog function
+show_help() {
+  echo "Usage: $0 [-h] [-q QUANTUM] [-s SAMPLERATE] [-l APP_PATH]"
+  echo ""
+  echo "Options:"
+  echo "  -h            Show this help message and exit."
+  echo "  -q QUANTUM    Force the Pipewire session quantum (e.g., 64, 128, 256)."
+  echo "  -s SAMPLERATE Force the Pipewire session samplerate (e.g., 44100, 48000)."
+  echo "  -l APP_PATH   Full path to the application to launch."
+  echo "                (Automatically sets WINENTSYNC=1 for the launched app)."
+  echo ""
+  echo "Note:"
+  echo "  If arguments are omitted, a GUI will prompt for them (requires kdialog or zenity)."
+  echo ""
+  echo "Example:"
+  echo "  $0 -q 64 -s 48000 -l /usr/bin/reaper"
 }
 
-if [ -z "$APP_PATH" ] || [ -z "$AUDIO_BUFFER" ] || [ -z "$AUDIO_SAMPLE_RATE" ]; then
-    if command -v kdialog >/dev/null; then
-        APP_PATH=$(kdialog --getopenfilename /usr/bin "Executable Files (*)")
-        AUDIO_BUFFER=$(kdialog --combobox "Buffer" "16" "24" "32" "48" "64" "96" "128" "192" "256" "384" "512" "768" "1024" "1536" "2048" "3072" "4096" "6144" "8192")
-        AUDIO_SAMPLE_RATE=$(kdialog --combobox "Rate" "44100" "48000" "88200" "96000" "192000")
-    elif command -v zenity >/dev/null; then
-        APP_PATH=$(zenity --file-selection --title="Select Application")
-        AUDIO_BUFFER=$(zenity --list --column="Buffer" "16" "24" "32" "48" "64" "96" "128" "192" "256" "384" "512" "768" "1024" "1536" "2048" "3072" "4096" "6144" "8192")
-        AUDIO_SAMPLE_RATE=$(zenity --list --column="Rate" "44100" "48000" "88200" "96000" "192000")
-    else
-        # CLI Selection Logic
-        [ -z "$APP_PATH" ] && read -p "Enter App Path: " APP_PATH
-        while ! validate_input "$AUDIO_BUFFER" 16 8192; do read -p "Enter Buffer (16-8192): " AUDIO_BUFFER; done
-        while ! validate_input "$AUDIO_SAMPLE_RATE" 44100 192000; do read -p "Enter Rate (44100-192000): " AUDIO_SAMPLE_RATE; done
+# Parse CLI options first
+while getopts "hq:s:l:" opt; do
+  case ${opt} in
+    h )
+      show_help
+      exit 0
+      ;;
+    q )
+      QUANTUM=$OPTARG
+      ;;
+    s )
+      SAMPLERATE=$OPTARG
+      ;;
+    l )
+      APP_PATH=$OPTARG
+      ;;
+    \? )
+      echo "Invalid option. Run '$0 -h' for help."
+      exit 1
+      ;;
+  esac
+done
+
+# Shift parsed options to handle any trailing arguments for the launched app
+shift $((OPTIND -1))
+
+# Detect available GUI tool (kdialog preferred, fallback to zenity)
+GUI_TOOL=""
+if command -v kdialog &> /dev/null; then
+    GUI_TOOL="kdialog"
+elif command -v zenity &> /dev/null; then
+    GUI_TOOL="zenity"
+fi
+
+# GUI Prompt Logic
+if [ -n "$GUI_TOOL" ]; then
+    # Prompt for Quantum if not provided via CLI
+    if [ -z "$QUANTUM" ]; then
+        if [ "$GUI_TOOL" = "kdialog" ]; then
+            QUANTUM=$(kdialog --title "Select Quantum" --combobox "Select Pipewire Session Quantum:" 16 24 32 48 64 96 128 192 256 512 1024 2048 4096)
+        else
+            QUANTUM=$(zenity --list --title="Select Quantum" --text="Select Pipewire Session Quantum:" --column="Quantum" 16 24 32 48 64 96 128 192 256 512 1024 2048 4096)
+        fi
+    fi
+
+    # Prompt for Samplerate if not provided via CLI
+    if [ -z "$SAMPLERATE" ]; then
+        if [ "$GUI_TOOL" = "kdialog" ]; then
+            SAMPLERATE=$(kdialog --title "Select Samplerate" --combobox "Select Pipewire Session Samplerate:" 44100 48000 88200 96000 192000)
+        else
+            SAMPLERATE=$(zenity --list --title="Select Samplerate" --text="Select Pipewire Session Samplerate:" --column="Samplerate" 44100 48000 88200 96000 192000)
+        fi
+    fi
+
+    # Prompt for Application Path if not provided via CLI
+    if [ -z "$APP_PATH" ]; then
+        # Ensure the BINARY_PATH ends with a slash so the file selector opens inside the directory
+        if [ "$GUI_TOOL" = "kdialog" ]; then
+            APP_PATH=$(kdialog --title "Select Application to Launch" --getopenfilename "${BINARY_PATH%%/}/")
+        else
+            APP_PATH=$(zenity --file-selection --title="Select Application to Launch" --filename="${BINARY_PATH%%/}/")
+        fi
     fi
 fi
 
-# ------------------------------------------------------------------------------
-# 3. NOTIFICATION & EXECUTION
-# ------------------------------------------------------------------------------
-show_notification() {
-    APP_NAME=$(basename "$APP_PATH")
-    MSG="Launching $APP_NAME\nLatency: ${AUDIO_BUFFER}/${AUDIO_SAMPLE_RATE}"
+# Apply Quantum if specified
+if [ -n "$QUANTUM" ]; then
+    pw-metadata -n settings 0 clock.force-quantum "$QUANTUM"
+    echo "Pipewire quantum forced to $QUANTUM"
+fi
 
-    if command -v kdialog >/dev/null; then
-        kdialog --title "Pipewire Control GUI" --passivepopup "$MSG" 5
-    elif command -v zenity >/dev/null; then
-        zenity --notification --text="$MSG"
+# Apply Samplerate if specified
+if [ -n "$SAMPLERATE" ]; then
+    pw-metadata -n settings 0 clock.force-rate "$SAMPLERATE"
+    echo "Pipewire samplerate forced to $SAMPLERATE"
+fi
+
+# Launch application if specified
+if [ -n "$APP_PATH" ]; then
+    # Check if the path exists AND is an executable file
+    if [ -x "$APP_PATH" ] && [ ! -d "$APP_PATH" ]; then
+        echo "Launching $APP_PATH with WINENTSYNC=1..."
+        env WINENTSYNC=1 "$APP_PATH" "$@"
+    elif [ -e "$APP_PATH" ]; then
+        echo "Error: '$APP_PATH' exists but is not executable (or is a directory)."
+        exit 1
     else
-        echo -e "\033[1;32m[LOG]\033[0m $MSG"
-    fi
-}
-
-launch_app() {
-    # Check if app exists
-    if [[ ! -x "$(command -v "$APP_PATH")" && ! -f "$APP_PATH" ]]; then
-        echo "Error: Binary not found."
+        echo "Error: The application path '$APP_PATH' does not exist."
         exit 1
     fi
-
-    # Set PipeWire Latency Environment
-    export PIPEWIRE_LATENCY="${AUDIO_BUFFER}/${AUDIO_SAMPLE_RATE}"
-
-    # 2026 High-Performance Environment Variables
-    export PROTON_USE_WOW64=1
-    export WINENTSYNC=1
-    export XDG_SESSION_TYPE=wayland
-
-    show_notification
-
-    # Launch with SCX Scheduler and Mode
-    "$APP_PATH"
-
-}
-
-launch_app
+else
+    echo "No application path provided or selection was canceled. Exiting."
+fi
