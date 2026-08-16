@@ -20,76 +20,69 @@ show_help() {
   echo "                (Automatically sets WINENTSYNC=1 for the launched app)."
   echo ""
   echo "Note:"
-  echo "  If arguments are omitted, a GUI will prompt for them (requires kdialog or zenity)."
+  echo "  If NO arguments are provided, a GUI will prompt for all values."
+  echo "  If ANY arguments are provided, the script runs in CLI mode only."
   echo ""
   echo "Example:"
   echo "  $0 -q 64 -s 48000 -l /usr/bin/reaper"
 }
 
-# Parse CLI options first
-while getopts "hq:s:l:" opt; do
-  case ${opt} in
-    h )
-      show_help
-      exit 0
-      ;;
-    q )
-      QUANTUM=$OPTARG
-      ;;
-    s )
-      SAMPLERATE=$OPTARG
-      ;;
-    l )
-      APP_PATH=$OPTARG
-      ;;
-    \? )
-      echo "Invalid option. Run '$0 -h' for help."
-      exit 1
-      ;;
-  esac
-done
+# Branch logic: GUI if no arguments, CLI if arguments are present
+if [ "$#" -eq 0 ]; then
+    # Detect available GUI tool (kdialog preferred, fallback to zenity)
+    GUI_TOOL=""
+    if command -v kdialog &> /dev/null; then
+        GUI_TOOL="kdialog"
+    elif command -v zenity &> /dev/null; then
+        GUI_TOOL="zenity"
+    else
+        echo "Error: No arguments provided and neither kdialog nor zenity is installed."
+        echo "Run '$0 -h' to see CLI usage."
+        exit 1
+    fi
 
-# Shift parsed options to handle any trailing arguments for the launched app
-shift $((OPTIND -1))
+    # GUI Prompts
+    if [ "$GUI_TOOL" = "kdialog" ]; then
+        QUANTUM=$(kdialog --title "Select Quantum" --combobox "Select Pipewire Session Quantum:" 16 24 32 48 64 96 128 192 256 512 1024 2048 4096)
+        SAMPLERATE=$(kdialog --title "Select Samplerate" --combobox "Select Pipewire Session Samplerate:" 44100 48000 88200 96000 192000)
+        APP_PATH=$(kdialog --title "Select Application to Launch" --getopenfilename "${BINARY_PATH%%/}/")
+    else
+        QUANTUM=$(zenity --list --title="Select Quantum" --text="Select Pipewire Session Quantum:" --column="Quantum" 16 24 32 48 64 96 128 192 256 512 1024 2048 4096)
+        SAMPLERATE=$(zenity --list --title="Select Samplerate" --text="Select Pipewire Session Samplerate:" --column="Samplerate" 44100 48000 88200 96000 192000)
+        APP_PATH=$(zenity --file-selection --title="Select Application to Launch" --filename="${BINARY_PATH%%/}/")
+    fi
 
-# Detect available GUI tool (kdialog preferred, fallback to zenity)
-GUI_TOOL=""
-if command -v kdialog &> /dev/null; then
-    GUI_TOOL="kdialog"
-elif command -v zenity &> /dev/null; then
-    GUI_TOOL="zenity"
+else
+    # CLI Logic
+    while getopts "hq:s:l:" opt; do
+      case ${opt} in
+        h )
+          show_help
+          exit 0
+          ;;
+        q )
+          QUANTUM=$OPTARG
+          ;;
+        s )
+          SAMPLERATE=$OPTARG
+          ;;
+        l )
+          APP_PATH=$OPTARG
+          ;;
+        \? )
+          echo "Invalid option. Run '$0 -h' for help."
+          exit 1
+          ;;
+      esac
+    done
+
+    # Shift parsed options to handle any trailing arguments for the launched app
+    shift $((OPTIND -1))
 fi
 
-# GUI Prompt Logic
-if [ -n "$GUI_TOOL" ]; then
-    # Prompt for Quantum if not provided via CLI
-    if [ -z "$QUANTUM" ]; then
-        if [ "$GUI_TOOL" = "kdialog" ]; then
-            QUANTUM=$(kdialog --title "Select Quantum" --combobox "Select Pipewire Session Quantum:" 16 24 32 48 64 96 128 192 256 512 1024 2048 4096)
-        else
-            QUANTUM=$(zenity --list --title="Select Quantum" --text="Select Pipewire Session Quantum:" --column="Quantum" 16 24 32 48 64 96 128 192 256 512 1024 2048 4096)
-        fi
-    fi
-
-    # Prompt for Samplerate if not provided via CLI
-    if [ -z "$SAMPLERATE" ]; then
-        if [ "$GUI_TOOL" = "kdialog" ]; then
-            SAMPLERATE=$(kdialog --title "Select Samplerate" --combobox "Select Pipewire Session Samplerate:" 44100 48000 88200 96000 192000)
-        else
-            SAMPLERATE=$(zenity --list --title="Select Samplerate" --text="Select Pipewire Session Samplerate:" --column="Samplerate" 44100 48000 88200 96000 192000)
-        fi
-    fi
-
-    # Prompt for Application Path if not provided via CLI
-    if [ -z "$APP_PATH" ]; then
-        # Ensure the BINARY_PATH ends with a slash so the file selector opens inside the directory
-        if [ "$GUI_TOOL" = "kdialog" ]; then
-            APP_PATH=$(kdialog --title "Select Application to Launch" --getopenfilename "${BINARY_PATH%%/}/")
-        else
-            APP_PATH=$(zenity --file-selection --title="Select Application to Launch" --filename="${BINARY_PATH%%/}/")
-        fi
-    fi
-fi
+# ==========================================
+# Execution Phase (Applies to both modes)
+# ==========================================
 
 # Apply Quantum if specified
 if [ -n "$QUANTUM" ]; then
@@ -117,5 +110,5 @@ if [ -n "$APP_PATH" ]; then
         exit 1
     fi
 else
-    echo "No application path provided or selection was canceled. Exiting."
+    echo "No application path provided or selection was canceled."
 fi

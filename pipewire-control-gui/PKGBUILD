@@ -1,5 +1,5 @@
 pkgname=pipewire-control-gui
-pkgver=3.0.0
+pkgver=3.2.0
 pkgrel=1
 arch=('x86_64')
 url="https://github.com/usrmusicman/PKGBUILDS"
@@ -12,7 +12,7 @@ pkgdesc="Pipewire Session Control"
 source=("Pipewire Control GUI.desktop"
         "pipewire-control-gui")
 sha256sums=('65fd2ca2d3b3fb8482a1cb030eaccf6c1d5b70501e8b71041334653a7e2387e7'
-            '4f9b729f1d3d3fa6d58f533165e61a54cdbb6d004daaa29ca841df59f709a243')
+            'e87e3a57efb7a270393a8ed9efc22e206d754769d150d165246bad85eddb10bc')
 
 package() {
     ## Install Script
