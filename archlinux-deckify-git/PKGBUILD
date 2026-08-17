@@ -79,13 +79,13 @@ package_archlinux-deckify-git() {
   ln -s /opt/steamos-session/steamos-session-select "$pkgdir/usr/bin/steamos-session-select"
 
   # Install sudoers override file
-  cat <<EOF > "$pkgdir/etc/sudoers.d/10-steamos-session-overrides"
+  cat <<EOF > "$pkgdir/etc/sudoers.d/100-steamos-session-overrides"
 # SteamOS Enhanced Gamemode
 %wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/steamos-gamemode-enhanced
 EOF
 
 chmod 750 $pkgdir/etc/sudoers.d
-chmod 440 $pkgdir/etc/sudoers.d/10-steamos-session-overrides
+chmod 440 $pkgdir/etc/sudoers.d/100-steamos-session-overrides
 
   # Install Getty Override Template
   cat <<EOF > "$pkgdir/etc/systemd/system/getty@tty1.service.d/override.conf"
