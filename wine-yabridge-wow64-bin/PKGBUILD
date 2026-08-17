@@ -12,8 +12,8 @@ provides=(
   "wine-wow64=$pkgver"
 )
 conflicts=("wine")
-source=("https://github.com/Kron4ek/Wine-Builds/releases/download/${pkgver}/wine-${pkgver}-staging-tkg-amd64-wow64.tar.xz")
-sha256sums=('efa9f602507dc1c1296c2415c19c1e76bc1780052ccc5197a7abb28ff31784d4')
+source=("https://github.com/Kron4ek/Wine-Builds/releases/download/${pkgver}/wine-${pkgver}-staging-amd64-wow64.tar.xz")
+sha256sums=('bf1d9f386fc84f4c2224dd17c45bffecf0bdceb88a02b5f5fcbf740134101613')
 
 package() {
 
@@ -21,6 +21,6 @@ package() {
   mkdir -p ${pkgdir}/usr
 
   ## Install wine package
-  cp -rf ${srcdir}/wine-${pkgver}-staging-tkg-amd64-wow64/{bin,lib,share} ${pkgdir}/usr
+  cp -rf ${srcdir}/wine-${pkgver}-staging-amd64-wow64/{bin,lib,share} ${pkgdir}/usr
 
 }
