@@ -19,7 +19,7 @@ pkgver() {
 }
 
 package_archlinux-deckify-git() {
-  depends=('catimg' 'gamemode' 'gamescope' 'steam' 'steam-devices' 'bash' 'realtime-privileges' 'sudo' 'scx-scheds' 'scx-tools' 'pipewire' 'iw' 'udiskie')
+  depends=('catimg' 'gamemode' 'gamescope' 'steam' 'steam-devices' 'bash' 'ntsync-autoload' 'realtime-privileges' 'sudo' 'scx-scheds' 'scx-tools' 'pipewire' 'iw' 'udiskie')
   pkgdesc="Modular SteamOS-like session for Arch with centralized configuration and profile templates"
   provides=("$pkgbase-git")
   conflicts=("$pkgbase-git")
@@ -118,16 +118,6 @@ ACTION=="add|change", KERNEL=="nvme[0-9]*n[0-9]*", ATTR{queue/rotational}=="0", 
 
 # Set 'none' for non-rotational SATA SSDs
 ACTION=="add|change", KERNEL=="sd[a-z]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="none"
-EOF
-
-  # Create the ntsync module load file to ensure it starts at boot
-  cat <<EOF > "$pkgdir/etc/modules-load.d/ntsync.conf"
-ntsync
-EOF
-
-  # Create a udev rule to allow the user to access /dev/ntsync
-  cat <<EOF > "$pkgdir/etc/udev/rules.d/99-ntsync.rules"
-KERNEL=="ntsync", MODE="0666"
 EOF
 
   # Uinput alias modprobe
