@@ -1,5 +1,5 @@
 pkgbase = archlinux-deckify
-	pkgver = r128.6204485
+	pkgver = r129.1ea2782
 	pkgrel = 1
 	url = https://github.com/usrmusicman/ArchLinuxDeckify
 	arch = any
@@ -17,6 +17,7 @@ pkgname = archlinux-deckify-git
 	depends = steam
 	depends = steam-devices
 	depends = bash
+	depends = ntsync-autoload
 	depends = realtime-privileges
 	depends = sudo
 	depends = scx-scheds
