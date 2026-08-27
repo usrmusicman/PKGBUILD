@@ -1,5 +1,5 @@
 pkgbase = mix-locker
-	pkgver = 1.0.8
+	pkgver = 1.0.9
 	pkgrel = 1
 	url = https://audioassault.mx/getmixlocker
 	arch = x86_64
