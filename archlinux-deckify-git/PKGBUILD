@@ -4,7 +4,7 @@
 pkgbase=archlinux-deckify
 pkgname=("${pkgbase}-git" "${pkgbase}-database-git")
 _pkgname=ArchLinuxDeckify
-pkgver=r131.5311b6c
+pkgver=r132.2c9ed11
 pkgrel=1
 arch=('any')
 url="https://github.com/usrmusicman/ArchLinuxDeckify"
