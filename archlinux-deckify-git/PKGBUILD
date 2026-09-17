@@ -4,7 +4,7 @@
 pkgbase=archlinux-deckify
 pkgname=("${pkgbase}-git" "${pkgbase}-database-git")
 _pkgname=ArchLinuxDeckify
-pkgver=r134.7fa5ccc
+pkgver=r136.23ab49d
 pkgrel=1
 arch=('any')
 url="https://github.com/usrmusicman/ArchLinuxDeckify"
@@ -50,6 +50,7 @@ package_archlinux-deckify-git() {
   mkdir -p "$pkgdir/etc/modprobe.d"
   mkdir -p "$pkgdir/etc/modules-load.d"
   mkdir -p "$pkgdir/etc/systemd/system/getty@tty1.service.d"
+  mkdir -p "$pkgdir/usr/share/applications"
   mkdir -p "$pkgdir/usr/share/libalpm/hooks"
   mkdir -p "$pkgdir/etc/sudoers.d"
   mkdir -p "$pkgdir/etc/sysctl.d"
@@ -57,7 +58,7 @@ package_archlinux-deckify-git() {
   mkdir -p "$pkgdir/usr/bin"
 
   # Install scripts, and hardware startup configs
-  install -Dm755 $srcdir/ArchLinuxDeckify/steamos-deckify-toggle "$pkgdir/opt/steamos-session/steamos-deckify-toggle"
+  install -Dm755 $srcdir/ArchLinuxDeckify/steamos-esde-launcher "$pkgdir/opt/steamos-session/steamos-esde-launcher"
   install -Dm755 $srcdir/ArchLinuxDeckify/steamos-gamemode-enhanced "$pkgdir/opt/steamos-session/steamos-gamemode-enhanced"
   install -Dm755 $srcdir/ArchLinuxDeckify/steamos-session-launcher "$pkgdir/opt/steamos-session/steamos-session-launcher"
   install -Dm755 $srcdir/ArchLinuxDeckify/steamos-session-select "$pkgdir/opt/steamos-session/steamos-session-select"
@@ -65,8 +66,19 @@ package_archlinux-deckify-git() {
   install -Dm755 $srcdir/ArchLinuxDeckify/config/session/hardware/default/1440p-60 "$pkgdir/opt/steamos-session/config/session/hardware/default/1440p-60"
   install -Dm755 $srcdir/ArchLinuxDeckify/config/session/hardware/default/2160p-60 "$pkgdir/opt/steamos-session/config/session/hardware/default/2160p-60"
 
+  # Session Launchers (.desktop)
+  install -Dm644 $srcdir/ArchLinuxDeckify/launchers/esde-session.desktop "$pkgdir/usr/share/applications/esde-session.desktop"
+  install -Dm644 $srcdir/ArchLinuxDeckify/launchers/normal-session.desktop "$pkgdir/usr/share/applications/normal-session.desktop"
+  install -Dm644 $srcdir/ArchLinuxDeckify/launchers/steamos3-session.desktop "$pkgdir/usr/share/applications/steamos3-session.desktop"
+
+  # Modules (shell scripts)
+  install -Dm755 $srcdir/ArchLinuxDeckify/modules/session-deckify "$pkgdir/opt/steamos-session/modules/session-deckify"
+  install -Dm755 $srcdir/ArchLinuxDeckify/modules/session-esde "$pkgdir/opt/steamos-session/modules/session-esde"
+  install -Dm755 $srcdir/ArchLinuxDeckify/modules/session-normal "$pkgdir/opt/steamos-session/modules/session-normal"
+
   # Install the bash .profile templates
   install -Dm644 $srcdir/ArchLinuxDeckify/config/bash/.bash_profile.deckify "$pkgdir/opt/steamos-session/config/bash/.bash_profile.deckify"
+  install -Dm644 $srcdir/ArchLinuxDeckify/config/bash/.bash_profile.esde "$pkgdir/opt/steamos-session/config/bash/.bash_profile.esde"
   install -Dm644 $srcdir/ArchLinuxDeckify/config/bash/.bash_profile.normal "$pkgdir/opt/steamos-session/config/bash/.bash_profile.normal"
 
   # Install the associated assets
@@ -82,6 +94,11 @@ package_archlinux-deckify-git() {
   cat <<EOF > "$pkgdir/etc/sudoers.d/100-steamos-session-overrides"
 # SteamOS Enhanced Gamemode
 %wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/steamos-gamemode-enhanced
+
+# Session swapping scripts
+%wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/modules/session-deckify
+%wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/modules/session-esde
+%wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/modules/session-normal
 EOF
 
 chmod 750 $pkgdir/etc/sudoers.d
