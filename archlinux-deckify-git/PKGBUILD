@@ -4,7 +4,7 @@
 pkgbase=archlinux-deckify
 pkgname=("${pkgbase}-git" "${pkgbase}-database-git")
 _pkgname=ArchLinuxDeckify
-pkgver=r136.23ab49d
+pkgver=r138.e85ef5f
 pkgrel=1
 arch=('any')
 url="https://github.com/usrmusicman/ArchLinuxDeckify"
@@ -58,34 +58,26 @@ package_archlinux-deckify-git() {
   mkdir -p "$pkgdir/usr/bin"
 
   # Install scripts, and hardware startup configs
-  install -Dm755 $srcdir/ArchLinuxDeckify/steamos-esde-launcher "$pkgdir/opt/steamos-session/steamos-esde-launcher"
   install -Dm755 $srcdir/ArchLinuxDeckify/steamos-gamemode-enhanced "$pkgdir/opt/steamos-session/steamos-gamemode-enhanced"
   install -Dm755 $srcdir/ArchLinuxDeckify/steamos-session-launcher "$pkgdir/opt/steamos-session/steamos-session-launcher"
   install -Dm755 $srcdir/ArchLinuxDeckify/steamos-session-select "$pkgdir/opt/steamos-session/steamos-session-select"
-  install -Dm755 $srcdir/ArchLinuxDeckify/config/session/hardware/default/1080p-60 "$pkgdir/opt/steamos-session/config/session/hardware/default/1080p-60"
-  install -Dm755 $srcdir/ArchLinuxDeckify/config/session/hardware/default/1440p-60 "$pkgdir/opt/steamos-session/config/session/hardware/default/1440p-60"
-  install -Dm755 $srcdir/ArchLinuxDeckify/config/session/hardware/default/2160p-60 "$pkgdir/opt/steamos-session/config/session/hardware/default/2160p-60"
 
   # Session Launchers (.desktop)
-  install -Dm644 $srcdir/ArchLinuxDeckify/launchers/esde-session.desktop "$pkgdir/usr/share/applications/esde-session.desktop"
   install -Dm644 $srcdir/ArchLinuxDeckify/launchers/normal-session.desktop "$pkgdir/usr/share/applications/normal-session.desktop"
   install -Dm644 $srcdir/ArchLinuxDeckify/launchers/steamos3-session.desktop "$pkgdir/usr/share/applications/steamos3-session.desktop"
 
   # Modules (shell scripts)
   install -Dm755 $srcdir/ArchLinuxDeckify/modules/session-deckify "$pkgdir/opt/steamos-session/modules/session-deckify"
-  install -Dm755 $srcdir/ArchLinuxDeckify/modules/session-esde "$pkgdir/opt/steamos-session/modules/session-esde"
   install -Dm755 $srcdir/ArchLinuxDeckify/modules/session-normal "$pkgdir/opt/steamos-session/modules/session-normal"
 
   # Install the bash .profile templates
   install -Dm644 $srcdir/ArchLinuxDeckify/config/bash/.bash_profile.deckify "$pkgdir/opt/steamos-session/config/bash/.bash_profile.deckify"
-  install -Dm644 $srcdir/ArchLinuxDeckify/config/bash/.bash_profile.esde "$pkgdir/opt/steamos-session/config/bash/.bash_profile.esde"
   install -Dm644 $srcdir/ArchLinuxDeckify/config/bash/.bash_profile.normal "$pkgdir/opt/steamos-session/config/bash/.bash_profile.normal"
 
   # Install the associated assets
   install -Dm644 $srcdir/ArchLinuxDeckify/assets/icons/steamos-session-icon.png "$pkgdir/opt/steamos-session/assets/icons/steamos-session-icon.png"
 
   # Create symlink
-  ln -s /opt/steamos-session/steamos-deckify-toggle "$pkgdir/usr/bin/steamos-deckify-toggle"
   ln -s /opt/steamos-session/steamos-gamemode-enhanced "$pkgdir/usr/bin/steamos-gamemode-enhanced"
   ln -s /opt/steamos-session/steamos-session-launcher "$pkgdir/usr/bin/steamos-session-launcher"
   ln -s /opt/steamos-session/steamos-session-select "$pkgdir/usr/bin/steamos-session-select"
@@ -97,7 +89,6 @@ package_archlinux-deckify-git() {
 
 # Session swapping scripts
 %wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/modules/session-deckify
-%wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/modules/session-esde
 %wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/modules/session-normal
 EOF
 
@@ -165,11 +156,5 @@ package_archlinux-deckify-database-git() {
   conflicts=("$pkgbase-database-git")
 
   mkdir -p $pkgdir/opt/steamos-session/config/session/hardware
-  cp -rvf $srcdir/ArchLinuxDeckify/config/session/hardware/amdgpu-sapphire-rx9070xt $pkgdir/opt/steamos-session/config/session/hardware
-  cp -rvf $srcdir/ArchLinuxDeckify/config/session/hardware/amdgpu-valve-steamdeck $pkgdir/opt/steamos-session/config/session/hardware
-  cp -rvf $srcdir/ArchLinuxDeckify/config/session/hardware/nvidia-acer-nitrov15 $pkgdir/opt/steamos-session/config/session/hardware
-  cp -rvf $srcdir/ArchLinuxDeckify/config/session/hardware/nvidia-fe-rtx2080ti $pkgdir/opt/steamos-session/config/session/hardware
-  cp -rvf $srcdir/ArchLinuxDeckify/config/session/hardware/nvidia-pny-rtx4080super $pkgdir/opt/steamos-session/config/session/hardware
-  cp -rvf $srcdir/ArchLinuxDeckify/config/session/hardware/xe-asrock-b580 $pkgdir/opt/steamos-session/config/session/hardware
-  cp -rvf $srcdir/ArchLinuxDeckify/config/session/hardware/xe-le-a770 $pkgdir/opt/steamos-session/config/session/hardware
+  cp -rvf $srcdir/ArchLinuxDeckify/config/session/hardware/* $pkgdir/opt/steamos-session/config/session/hardware
 }
