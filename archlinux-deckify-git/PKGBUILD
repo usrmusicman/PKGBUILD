@@ -1,10 +1,9 @@
 # Maintainer: Your Name <your@email.com>
 # Sysctl Tweaks
 
-pkgbase=archlinux-deckify
-pkgname=("${pkgbase}-git" "${pkgbase}-database-git")
+pkgname=archlinux-deckify-git
 _pkgname=ArchLinuxDeckify
-pkgver=r139.279818a
+pkgver=r145.25b7398
 pkgrel=1
 arch=('any')
 url="https://github.com/usrmusicman/ArchLinuxDeckify"
@@ -18,12 +17,12 @@ pkgver() {
   printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
 }
 
-package_archlinux-deckify-git() {
+package() {
   depends=('catimg' 'gamemode' 'gamescope' 'steam' 'steam-devices' 'bash' 'ntsync-autoload' 'realtime-privileges' 'sudo' 'scx-scheds' 'scx-tools' 'pipewire' 'iw' 'udiskie')
   pkgdesc="Modular SteamOS-like session for Arch with centralized configuration and profile templates"
-  provides=("$pkgbase-git")
-  conflicts=("$pkgbase-git")
-  install="$pkgbase-git.install"
+  provides=("$pkgname")
+  conflicts=("$pkgname")
+  install="$pkgname.install"
 
   optdepends=(
     'kdialog: For the QT file selection dialog'
@@ -53,12 +52,13 @@ package_archlinux-deckify-git() {
   mkdir -p "$pkgdir/usr/share/applications"
   mkdir -p "$pkgdir/usr/share/libalpm/hooks"
   mkdir -p "$pkgdir/etc/sudoers.d"
-  mkdir -p "$pkgdir/etc/sysctl.d"
   mkdir -p "$pkgdir/etc/udev/rules.d"
   mkdir -p "$pkgdir/usr/bin"
 
   # Install scripts, and hardware startup configs
+  install -Dm755 $srcdir/ArchLinuxDeckify/gamescope-app-launcher "$pkgdir/opt/steamos-session/gamescope-app-launcher"
   install -Dm755 $srcdir/ArchLinuxDeckify/steamos-gamemode-enhanced "$pkgdir/opt/steamos-session/steamos-gamemode-enhanced"
+  install -Dm755 $srcdir/ArchLinuxDeckify/steamos-profile-switcher "$pkgdir/opt/steamos-session/steamos-profile-switcher"
   install -Dm755 $srcdir/ArchLinuxDeckify/steamos-session-launcher "$pkgdir/opt/steamos-session/steamos-session-launcher"
   install -Dm755 $srcdir/ArchLinuxDeckify/steamos-session-select "$pkgdir/opt/steamos-session/steamos-session-select"
 
@@ -78,7 +78,9 @@ package_archlinux-deckify-git() {
   install -Dm644 $srcdir/ArchLinuxDeckify/assets/icons/steamos-session-icon.png "$pkgdir/opt/steamos-session/assets/icons/steamos-session-icon.png"
 
   # Create symlink
+  ln -s /opt/steamos-session/gamescope-app-launcher "$pkgdir/usr/bin/gamescope-app-launcher"
   ln -s /opt/steamos-session/steamos-gamemode-enhanced "$pkgdir/usr/bin/steamos-gamemode-enhanced"
+  ln -s /opt/steamos-session/steamos-profile-switcher "$pkgdir/usr/bin/steamos-profile-switcher"
   ln -s /opt/steamos-session/steamos-session-launcher "$pkgdir/usr/bin/steamos-session-launcher"
   ln -s /opt/steamos-session/steamos-session-select "$pkgdir/usr/bin/steamos-session-select"
 
@@ -86,10 +88,6 @@ package_archlinux-deckify-git() {
   cat <<EOF > "$pkgdir/etc/sudoers.d/100-steamos-session-overrides"
 # SteamOS Enhanced Gamemode
 %wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/steamos-gamemode-enhanced
-
-# Session swapping scripts
-%wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/modules/session-deckify
-%wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/modules/session-normal
 EOF
 
 chmod 750 $pkgdir/etc/sudoers.d
@@ -147,14 +145,4 @@ EOF
   cat <<EOF > "$pkgdir/etc/udev/rules.d/99-uinput.rules"
 KERNEL=="uinput", GROUP="input", MODE="0660", OPTIONS+="static_node=uinput"
 EOF
-}
-
-package_archlinux-deckify-database-git() {
-  depends=("archlinux-deckify-git")
-  pkgdesc="Modular SteamOS-like session for Arch (Profile Database)"
-  provides=("$pkgbase-database-git")
-  conflicts=("$pkgbase-database-git")
-
-  mkdir -p $pkgdir/opt/steamos-session/config/session/hardware
-  cp -rvf $srcdir/ArchLinuxDeckify/config/session/hardware/* $pkgdir/opt/steamos-session/config/session/hardware
 }
