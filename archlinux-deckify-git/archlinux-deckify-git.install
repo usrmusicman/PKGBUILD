@@ -2,13 +2,6 @@ post_install() {
   # Detect the real user
   REAL_USER=${SUDO_USER:-$USER}
 
-  echo "==> Configuring autologin for user: $REAL_USER"
-  sed -i "s/@USER@/$REAL_USER/g" /etc/systemd/system/getty@tty1.service.d/override.conf
-
-  echo "==> Reloading systemd and enabling getty@tty1"
-  systemctl daemon-reload
-  systemctl enable getty@tty1.service
-
   echo "==> Add user to groups..."
   USER_GROUPS="audio,video,games,realtime,input,render"
   usermod -aG "$USER_GROUPS" "$REAL_USER"

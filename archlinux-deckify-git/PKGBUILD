@@ -3,7 +3,7 @@
 
 pkgname=archlinux-deckify-git
 _pkgname=ArchLinuxDeckify
-pkgver=r145.25b7398
+pkgver=r147.3c89092
 pkgrel=1
 arch=('any')
 url="https://github.com/usrmusicman/ArchLinuxDeckify"
@@ -18,7 +18,7 @@ pkgver() {
 }
 
 package() {
-  depends=('catimg' 'gamemode' 'gamescope' 'steam' 'steam-devices' 'bash' 'ntsync-autoload' 'realtime-privileges' 'sudo' 'scx-scheds' 'scx-tools' 'pipewire' 'iw' 'udiskie')
+  depends=('catimg' 'gamemode' 'gamescope' 'steam' 'steam-devices' 'bash' 'ntsync-autoload' 'realtime-privileges' 'pipewire' 'iw' 'udiskie')
   pkgdesc="Modular SteamOS-like session for Arch with centralized configuration and profile templates"
   provides=("$pkgname")
   conflicts=("$pkgname")
@@ -51,27 +51,20 @@ package() {
   mkdir -p "$pkgdir/etc/systemd/system/getty@tty1.service.d"
   mkdir -p "$pkgdir/usr/share/applications"
   mkdir -p "$pkgdir/usr/share/libalpm/hooks"
-  mkdir -p "$pkgdir/etc/sudoers.d"
   mkdir -p "$pkgdir/etc/udev/rules.d"
   mkdir -p "$pkgdir/usr/bin"
 
   # Install scripts, and hardware startup configs
   install -Dm755 $srcdir/ArchLinuxDeckify/gamescope-app-launcher "$pkgdir/opt/steamos-session/gamescope-app-launcher"
-  install -Dm755 $srcdir/ArchLinuxDeckify/steamos-gamemode-enhanced "$pkgdir/opt/steamos-session/steamos-gamemode-enhanced"
   install -Dm755 $srcdir/ArchLinuxDeckify/steamos-profile-switcher "$pkgdir/opt/steamos-session/steamos-profile-switcher"
   install -Dm755 $srcdir/ArchLinuxDeckify/steamos-session-launcher "$pkgdir/opt/steamos-session/steamos-session-launcher"
   install -Dm755 $srcdir/ArchLinuxDeckify/steamos-session-select "$pkgdir/opt/steamos-session/steamos-session-select"
 
   # Session Launchers (.desktop)
-  install -Dm644 $srcdir/ArchLinuxDeckify/launchers/normal-session.desktop "$pkgdir/usr/share/applications/normal-session.desktop"
-  install -Dm644 $srcdir/ArchLinuxDeckify/launchers/steamos3-session.desktop "$pkgdir/usr/share/applications/steamos3-session.desktop"
-
-  # Modules (shell scripts)
-  install -Dm755 $srcdir/ArchLinuxDeckify/modules/session-deckify "$pkgdir/opt/steamos-session/modules/session-deckify"
-  install -Dm755 $srcdir/ArchLinuxDeckify/modules/session-normal "$pkgdir/opt/steamos-session/modules/session-normal"
+  install -Dm644 $srcdir/ArchLinuxDeckify/launchers/steamos3-gamepadui.desktop "$pkgdir/usr/share/applications/steamos3-gamepadui.desktop"
 
   # Install the bash .profile templates
-  install -Dm644 $srcdir/ArchLinuxDeckify/config/bash/.bash_profile.deckify "$pkgdir/opt/steamos-session/config/bash/.bash_profile.deckify"
+  install -Dm644 $srcdir/ArchLinuxDeckify/config/bash/.bash_profile.gamepadui "$pkgdir/opt/steamos-session/config/bash/.bash_profile.gamepadui"
   install -Dm644 $srcdir/ArchLinuxDeckify/config/bash/.bash_profile.normal "$pkgdir/opt/steamos-session/config/bash/.bash_profile.normal"
 
   # Install the associated assets
@@ -79,26 +72,9 @@ package() {
 
   # Create symlink
   ln -s /opt/steamos-session/gamescope-app-launcher "$pkgdir/usr/bin/gamescope-app-launcher"
-  ln -s /opt/steamos-session/steamos-gamemode-enhanced "$pkgdir/usr/bin/steamos-gamemode-enhanced"
   ln -s /opt/steamos-session/steamos-profile-switcher "$pkgdir/usr/bin/steamos-profile-switcher"
   ln -s /opt/steamos-session/steamos-session-launcher "$pkgdir/usr/bin/steamos-session-launcher"
   ln -s /opt/steamos-session/steamos-session-select "$pkgdir/usr/bin/steamos-session-select"
-
-  # Install sudoers override file
-  cat <<EOF > "$pkgdir/etc/sudoers.d/100-steamos-session-overrides"
-# SteamOS Enhanced Gamemode
-%wheel ALL=(ALL) NOPASSWD: /opt/steamos-session/steamos-gamemode-enhanced
-EOF
-
-chmod 750 $pkgdir/etc/sudoers.d
-chmod 440 $pkgdir/etc/sudoers.d/100-steamos-session-overrides
-
-  # Install Getty Override Template
-  cat <<EOF > "$pkgdir/etc/systemd/system/getty@tty1.service.d/override.conf"
-[Service]
-ExecStart=
-ExecStart=-/sbin/agetty --autologin @USER@ --noclear %I 38400 linux
-EOF
 
   # Install Pacman Hook for Gamescope Capabilities
   cat <<EOF > "$pkgdir/usr/share/libalpm/hooks/gamescope-capabilities.hook"
