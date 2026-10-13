@@ -1,6 +1,6 @@
 pkgbase = pipewire-control-gui
 	pkgdesc = Pipewire Session Control
-	pkgver = 3.2.0
+	pkgver = 4.0.0
 	pkgrel = 1
 	url = https://github.com/usrmusicman/PKGBUILDS
 	arch = x86_64
@@ -8,9 +8,11 @@ pkgbase = pipewire-control-gui
 	makedepends = git
 	depends = pipewire
 	depends = pipewire-jack
+	depends = scx-scheds
+	depends = scx-tools
 	source = Pipewire Control GUI.desktop
 	source = pipewire-control-gui
 	sha256sums = 65fd2ca2d3b3fb8482a1cb030eaccf6c1d5b70501e8b71041334653a7e2387e7
-	sha256sums = 2882db338092ea25d232d607b0752bc8a2969b62e9d0750bb6eef6390f843d9c
+	sha256sums = 0242d9eef784a3b3b297eeb94ac0e42762d5961736f8973f0ed8205c3479cbf2
 
 pkgname = pipewire-control-gui
