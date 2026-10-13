@@ -17,6 +17,10 @@ post_install() {
   echo "     Append the contents of /opt/steamos-session/config/.bash_profile to your ~/.bash_profile"
   echo "     cat /opt/steamos-session/config/.bash_profile >> ~/.bash_profile"
   echo " "
+  echo "  3. MASK / UNMASK YOUR DISPLAY MANAGER:"
+  echo "     sudo systemctl mask displaymanager.service"
+  echo "     sudo systemctl unmask displaymanager.service"
+  echo " "
   echo "==> Setup complete. Reboot to start your SteamOS session on TTY1."
 }
 

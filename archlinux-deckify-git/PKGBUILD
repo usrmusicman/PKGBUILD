@@ -3,7 +3,7 @@
 
 pkgname=archlinux-deckify-git
 _pkgname=ArchLinuxDeckify
-pkgver=r148.04db847
+pkgver=r151.de71057
 pkgrel=1
 arch=('any')
 url="https://github.com/usrmusicman/ArchLinuxDeckify"
@@ -58,7 +58,6 @@ package() {
   install -Dm755 $srcdir/ArchLinuxDeckify/gamescope-app-launcher "$pkgdir/opt/steamos-session/gamescope-app-launcher"
   install -Dm755 $srcdir/ArchLinuxDeckify/steamos-profile-switcher "$pkgdir/opt/steamos-session/steamos-profile-switcher"
   install -Dm755 $srcdir/ArchLinuxDeckify/steamos-session-launcher "$pkgdir/opt/steamos-session/steamos-session-launcher"
-  install -Dm755 $srcdir/ArchLinuxDeckify/steamos-session-select "$pkgdir/opt/steamos-session/steamos-session-select"
 
   # Session Launchers (.desktop)
   install -Dm644 $srcdir/ArchLinuxDeckify/launchers/steamos3-gamepadui.desktop "$pkgdir/usr/share/applications/steamos3-gamepadui.desktop"
@@ -74,7 +73,6 @@ package() {
   ln -s /opt/steamos-session/gamescope-app-launcher "$pkgdir/usr/bin/gamescope-app-launcher"
   ln -s /opt/steamos-session/steamos-profile-switcher "$pkgdir/usr/bin/steamos-profile-switcher"
   ln -s /opt/steamos-session/steamos-session-launcher "$pkgdir/usr/bin/steamos-session-launcher"
-  ln -s /opt/steamos-session/steamos-session-select "$pkgdir/usr/bin/steamos-session-select"
 
   # Install Pacman Hook for Gamescope Capabilities
   cat <<EOF > "$pkgdir/usr/share/libalpm/hooks/gamescope-capabilities.hook"
