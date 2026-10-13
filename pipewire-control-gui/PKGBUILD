@@ -4,7 +4,7 @@ pkgrel=1
 arch=('x86_64')
 url="https://github.com/usrmusicman/PKGBUILDS"
 license=('EULA')
-depends=('pipewire' 'pipewire-jack' 'scx-scheds' 'scx-tools')
+depends=('pipewire' 'pipewire-jack' 'scx-scheds' 'scx-tools' 'yabridge' 'yabridgectl')
 optdepnds=('kdialog: A utility for displaying dialog boxes from shell scripts'
           'zenity: Display graphical dialog boxes from shell scripts')
 makedepends=('git')
