@@ -74,6 +74,13 @@ package() {
   ln -s /opt/steamos-session/steamos-profile-switcher "$pkgdir/usr/bin/steamos-profile-switcher"
   ln -s /opt/steamos-session/steamos-session-launcher "$pkgdir/usr/bin/steamos-session-launcher"
 
+  # Install Getty Override Template
+  cat <<EOF > "$pkgdir/etc/systemd/system/getty@tty1.service.d/override.conf"
+[Service]
+ExecStart=
+ExecStart=-/sbin/agetty --autologin @USER@ --noclear %I 38400 linux
+EOF
+
   # Install Pacman Hook for Gamescope Capabilities
   cat <<EOF > "$pkgdir/usr/share/libalpm/hooks/gamescope-capabilities.hook"
 [Trigger]
