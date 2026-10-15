@@ -3,7 +3,7 @@
 
 pkgname=archlinux-deckify-git
 _pkgname=ArchLinuxDeckify
-pkgver=r152.2c0f6c7
+pkgver=r155.d32efe7
 pkgrel=1
 arch=('any')
 url="https://github.com/usrmusicman/ArchLinuxDeckify"
@@ -35,6 +35,7 @@ package() {
     'lib32-nvidia-utils: For Nvidia 32-bit gaming'
     'lib32-vulkan-radeon: For AMD Vulkan 32-bit support'
     'lib32-vulkan-intel: For Intel GPU 32-bit support'
+    'pipewire-control-gui: For rtprio and system tuning control'
     'plasma-login-manager: For automatic login support'
     'sddm: For automatic login support'
     'xf86-video-amdgpu: For AMD GPU support'
@@ -49,18 +50,14 @@ package() {
   mkdir -p "$pkgdir/etc/modprobe.d"
   mkdir -p "$pkgdir/etc/modules-load.d"
   mkdir -p "$pkgdir/etc/systemd/system/getty@tty1.service.d"
-  mkdir -p "$pkgdir/usr/share/applications"
   mkdir -p "$pkgdir/usr/share/libalpm/hooks"
   mkdir -p "$pkgdir/etc/udev/rules.d"
   mkdir -p "$pkgdir/usr/bin"
 
   # Install scripts, and hardware startup configs
   install -Dm755 $srcdir/ArchLinuxDeckify/gamescope-app-launcher "$pkgdir/opt/steamos-session/gamescope-app-launcher"
-  install -Dm755 $srcdir/ArchLinuxDeckify/steamos-profile-switcher "$pkgdir/opt/steamos-session/steamos-profile-switcher"
   install -Dm755 $srcdir/ArchLinuxDeckify/steamos-session-launcher "$pkgdir/opt/steamos-session/steamos-session-launcher"
-
-  # Session Launchers (.desktop)
-  install -Dm644 $srcdir/ArchLinuxDeckify/launchers/steamos3-gamepadui.desktop "$pkgdir/usr/share/applications/steamos3-gamepadui.desktop"
+  install -Dm755 $srcdir/ArchLinuxDeckify/steamos-session-manager "$pkgdir/opt/steamos-session/steamos-session-manager"
 
   # Install the bash .profile templates
   install -Dm644 $srcdir/ArchLinuxDeckify/config/bash/.bash_profile.gamepadui "$pkgdir/opt/steamos-session/config/bash/.bash_profile.gamepadui"
@@ -71,8 +68,8 @@ package() {
 
   # Create symlink
   ln -s /opt/steamos-session/gamescope-app-launcher "$pkgdir/usr/bin/gamescope-app-launcher"
-  ln -s /opt/steamos-session/steamos-profile-switcher "$pkgdir/usr/bin/steamos-profile-switcher"
   ln -s /opt/steamos-session/steamos-session-launcher "$pkgdir/usr/bin/steamos-session-launcher"
+  ln -s /opt/steamos-session/steamos-session-manager "$pkgdir/usr/bin/steamos-session-manager"
 
   # Install Getty Override Template
   cat <<EOF > "$pkgdir/etc/systemd/system/getty@tty1.service.d/override.conf"

@@ -1,5 +1,5 @@
 pkgbase = archlinux-deckify-git
-	pkgver = r152.2c0f6c7
+	pkgver = r155.d32efe7
 	pkgrel = 1
 	url = https://github.com/usrmusicman/ArchLinuxDeckify
 	arch = any
@@ -32,6 +32,7 @@ pkgname = archlinux-deckify-git
 	optdepends = lib32-nvidia-utils: For Nvidia 32-bit gaming
 	optdepends = lib32-vulkan-radeon: For AMD Vulkan 32-bit support
 	optdepends = lib32-vulkan-intel: For Intel GPU 32-bit support
+	optdepends = pipewire-control-gui: For rtprio and system tuning control
 	optdepends = plasma-login-manager: For automatic login support
 	optdepends = sddm: For automatic login support
 	optdepends = xf86-video-amdgpu: For AMD GPU support
