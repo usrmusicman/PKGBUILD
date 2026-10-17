@@ -1,6 +1,6 @@
 post_install() {
   # Detect the real user
-  REAL_USER=${SUDO_USER:-$USER}
+  REAL_USER=${SUDO_USER}
 
   echo "==> Configuring autologin for user: $REAL_USER"
   sed -i "s/@USER@/$REAL_USER/g" /etc/systemd/system/getty@tty1.service.d/override.conf
